@@ -198,13 +198,13 @@ print('Hello, ' .. player.Name)"></textarea>
     </div>
 
     <script>
-        function generateVar(len = 16) {
+        function generateVar(len = 12) {
             const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             let result = '';
             for (let i = 0; i < len; i++) {
                 result += chars[Math.floor(Math.random() * chars.length)];
             }
-            return 'l' + result;
+            return '_0x' + result;
         }
 
         function strToCharArray(str) {
@@ -229,7 +229,7 @@ print('Hello, ' .. player.Name)"></textarea>
             code = code.replace(/--\[\[[\s\S]*?\]\]/g, '');
             code = code.replace(/--[^\n]*/g, '');
 
-            // Protected keywords
+            // Protected keywords - everything Roblox and Lua
             const protected = [
                 'local', 'function', 'end', 'if', 'then', 'else', 'elseif', 
                 'while', 'do', 'for', 'repeat', 'until', 'return', 'break', 'continue',
@@ -243,10 +243,10 @@ print('Hello, ' .. player.Name)"></textarea>
                 'task', 'os', 'debug', 'coroutine', 'require', 'getfenv', 'setfenv',
                 'loadstring', 'char', 'byte', 'len', 'sub', 'gsub', 'find', 'match',
                 'LocalPlayer', 'Name', 'Character', 'Humanoid', 'WalkSpeed', 'Health',
-                'HttpService', 'TweenService', 'RunService', 'UserInputService'
+                'HttpService', 'TweenService', 'RunService', 'UserInputService', 'insert', 'concat'
             ];
 
-            // Collect variables
+            // Collect all user-defined variables
             const varMap = new Map();
             const pattern = /\b([a-zA-Z_][a-zA-Z0-9_]*)\b/g;
             let match;
@@ -254,7 +254,7 @@ print('Hello, ' .. player.Name)"></textarea>
 
             while ((match = pattern.exec(code)) !== null) {
                 const name = match[1];
-                if (!protected.includes(name) && !seen.has(name)) {
+                if (!protected.includes(name) && !seen.has(name) && !name.startsWith('_0x')) {
                     seen.add(name);
                     varMap.set(name, generateVar());
                 }
@@ -269,22 +269,18 @@ print('Hello, ' .. player.Name)"></textarea>
                 code = code.replace(regex, newVar);
             }
 
-            // Obfuscate strings - Fixed for Delta executor
-            code = code.replace(/'([^'\\]*(\\.[^'\\]*)*)'/g, (match, p1) => {
+            // Obfuscate strings
+            code = code.replace(/'([^']*)'/g, (match, p1) => {
                 if (p1.length === 0) return "''";
                 return 'string.char(' + strToCharArray(p1) + ')';
             });
-            code = code.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match, p1) => {
+            code = code.replace(/"([^"]*)"/g, (match, p1) => {
                 if (p1.length === 0) return '""';
                 return 'string.char(' + strToCharArray(p1) + ')';
             });
 
-            // Simple wrapper that actually works
-            const wrapVar = generateVar();
-            
-            let wrapped = `local ${wrapVar}=function() ${code} end;${wrapVar}()`;
-
-            document.getElementById('output').value = wrapped;
+            // Just output the obfuscated code directly - no wrapper needed
+            document.getElementById('output').value = code;
         }
 
         function copyOutput() {

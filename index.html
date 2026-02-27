@@ -942,6 +942,7 @@
 
     <script>
         const SCRIPTBLOX_USER = 'KittyScriptsRBLX';
+        const SCRIPTBLOX_USER_ID = '676916'; // ScriptBlox user ID
         const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
         let cachedScripts = null;
         let cacheTimestamp = null;
@@ -997,31 +998,70 @@
 
             try {
                 let allScripts = [];
-                let page = 1;
+                let page = 0;
                 let hasMore = true;
                 const maxPages = 50; // Safety limit
                 
-                while (hasMore && page <= maxPages) {
-                    const response = await fetch(`https://scriptblox.com/api/script/search?q=${SCRIPTBLOX_USER}&mode=free&max=100&page=${page}`);
-                    
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch scripts');
-                    }
-
-                    const data = await response.json();
-                    
-                    if (data.result && data.result.scripts && data.result.scripts.length > 0) {
-                        allScripts = allScripts.concat(data.result.scripts);
+                // Try multiple API endpoints to find scripts
+                const endpoints = [
+                    // Method 1: Search by owner
+                    `https://scriptblox.com/api/script/search?owner=${SCRIPTBLOX_USER_ID}&max=100`,
+                    // Method 2: Search by query with mode
+                    `https://scriptblox.com/api/script/search?q=owner:${SCRIPTBLOX_USER}&mode=free&max=100`,
+                    // Method 3: Direct username search
+                    `https://scriptblox.com/api/script/search?q=${SCRIPTBLOX_USER}&max=100`
+                ];
+                
+                for (const baseEndpoint of endpoints) {
+                    try {
+                        console.log('Trying endpoint:', baseEndpoint);
+                        page = 0;
+                        allScripts = [];
+                        hasMore = true;
                         
-                        // Check if there are more pages
-                        if (data.result.scripts.length < 100) {
-                            hasMore = false;
-                        } else {
-                            page++;
+                        while (hasMore && page < maxPages) {
+                            const url = baseEndpoint.includes('?') 
+                                ? `${baseEndpoint}&page=${page}` 
+                                : `${baseEndpoint}?page=${page}`;
+                            
+                            const response = await fetch(url);
+                            
+                            if (!response.ok) {
+                                console.log('Response not OK for:', url);
+                                break;
+                            }
+
+                            const data = await response.json();
+                            console.log('API Response:', data);
+                            
+                            if (data.result && data.result.scripts && data.result.scripts.length > 0) {
+                                allScripts = allScripts.concat(data.result.scripts);
+                                console.log(`Found ${data.result.scripts.length} scripts on page ${page}`);
+                                
+                                // Check if there are more pages
+                                if (data.result.scripts.length < 100) {
+                                    hasMore = false;
+                                } else {
+                                    page++;
+                                }
+                            } else {
+                                hasMore = false;
+                            }
                         }
-                    } else {
-                        hasMore = false;
+                        
+                        // If we found scripts, break out of endpoint loop
+                        if (allScripts.length > 0) {
+                            console.log(`Successfully loaded ${allScripts.length} scripts`);
+                            break;
+                        }
+                    } catch (err) {
+                        console.error('Error with endpoint:', baseEndpoint, err);
+                        continue;
                     }
+                }
+                
+                if (allScripts.length === 0) {
+                    console.error('No scripts found with any endpoint');
                 }
                 
                 cachedScripts = allScripts;

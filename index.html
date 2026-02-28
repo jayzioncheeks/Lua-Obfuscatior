@@ -1053,21 +1053,20 @@
 
                 // Add cache-busting timestamp to force fresh data
                 const cacheBuster = new Date().getTime();
-                const response = await fetch(`https://scriptblox.com/api/script/search?q=KSRxQmBvZ&_=${cacheBuster}`, {
-                    cache: 'no-store',
-                    headers: {
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache',
-                        'Expires': '0'
-                    }
-                });
+                const response = await fetch(`https://scriptblox.com/api/script/search?q=KSRxQmBvZ&_=${cacheBuster}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('API Response:', data); // Debug log
 
                 if (!data.result || !data.result.scripts || data.result.scripts.length === 0) {
                     scriptsContainer.innerHTML = `
                         <div class="empty-state">
                             <h3>No scripts found</h3>
-                            <p>No scripts available from this user yet</p>
+                            <p>No scripts available yet</p>
                         </div>
                     `;
                     allScripts = [];
@@ -1083,6 +1082,7 @@
                     <div class="empty-state">
                         <h3>Error loading scripts</h3>
                         <p>Failed to fetch scripts from ScriptBlox. Please try again later.</p>
+                        <p style="font-size: 0.9rem; margin-top: 1rem; color: var(--text-dim);">Error: ${error.message}</p>
                     </div>
                 `;
                 showToast('Failed to load scripts', 'error');

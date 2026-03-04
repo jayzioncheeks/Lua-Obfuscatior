@@ -1119,7 +1119,7 @@
                 const imageUrl = (script.game && script.game.imageUrl) || script.scriptImage || script.image || script.imageUrl;
                 
                 if (imageUrl) {
-                    thumbnailHtml = `<img src="${imageUrl}" alt="${escapeHtml(script.title || 'Script')}" class="script-thumbnail" onerror="this.style.display='none'">`;
+                    thumbnailHtml = `<img src="${imageUrl}" alt="${escapeHtml(script.title || 'Script')}" class="script-thumbnail" onerror="this.remove()">`;
                 }
 
                 scriptCard.innerHTML = `

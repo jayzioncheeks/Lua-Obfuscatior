@@ -103,67 +103,95 @@
         /* ── Navbar ── */
         .navbar {
             position: sticky; top: 0; z-index: 100;
-            display: flex; align-items: center;
-            padding: 1rem 3rem;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.75rem 1.5rem;
             backdrop-filter: blur(20px) saturate(180%);
-            background: rgba(18, 10, 31, 0.85);
+            background: rgba(18, 10, 31, 0.95);
             border-bottom: 1px solid var(--border-subtle);
-            transition: background 0.3s ease, border-color 0.3s ease;
-            overflow-x: auto; scrollbar-width: none;
+            transition: background 0.3s ease;
         }
-        .navbar::-webkit-scrollbar { display: none; }
-        [data-theme="light"] .navbar { background: rgba(243, 240, 247, 0.95); }
         .navbar::after {
             content: '';
             position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
             background: linear-gradient(90deg, transparent, var(--accent-primary) 30%, var(--accent-primary) 70%, transparent);
             opacity: 0.3;
         }
+        [data-theme="light"] .navbar { background: rgba(243, 240, 247, 0.97); }
 
-        .social-bar {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.5rem 3rem;
-            background: rgba(18, 10, 31, 0.85);
-            border-bottom: 1px solid var(--border-subtle);
-            position: sticky; top: 58px; z-index: 99;
-            backdrop-filter: blur(20px);
+        .nav-brand {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800; font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-bright));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        [data-theme="light"] .social-bar { background: rgba(243, 240, 247, 0.95); }
-        
+        .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+
+        .social-icons-nav { display: flex; align-items: center; gap: 0.4rem; }
+
+        .hamburger {
+            display: flex; flex-direction: column; justify-content: center; gap: 5px;
+            background: none; border: none; cursor: pointer;
+            padding: 0.5rem; border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .hamburger:hover { background: rgba(124,58,237,0.15); }
+        .hamburger span {
+            display: block; width: 22px; height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .hamburger-dropdown {
+            display: none; flex-direction: column;
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: rgba(14, 8, 24, 0.98);
+            border-bottom: 1px solid var(--border-subtle);
+            backdrop-filter: blur(20px);
+            z-index: 99;
+            padding: 0.5rem 0;
+        }
+        [data-theme="light"] .hamburger-dropdown { background: rgba(243, 240, 247, 0.98); }
+        .hamburger-dropdown.open { display: flex; }
+
         .tabs { display: flex; gap: 0.75rem; position: relative; }
         .tab {
-            padding: 0.625rem 1.5rem;
-            cursor: pointer; border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 600; font-size: 0.95rem;
+            padding: 0.875rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600; font-size: 1rem;
             letter-spacing: 0.02em;
-            border: 1px solid transparent; background: transparent;
+            border: none; background: transparent;
+            border-left: 3px solid transparent;
         }
-        .tab:hover { color: var(--accent-bright); transform: translateY(-1px); }
+        .tab:hover { color: var(--accent-bright); background: rgba(124,58,237,0.08); border-left-color: var(--accent-primary); }
         .tab.active {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-bright));
-            color: white;
-            box-shadow: 0 8px 24px var(--accent-glow);
+            color: var(--accent-bright);
+            background: rgba(124,58,237,0.12);
+            border-left-color: var(--accent-primary);
         }
-        
+
+        .social-bar { display: none; }
+
         .social-buttons { display: flex; gap: 0.5rem; }
         .discord-icon-btn, .youtube-icon-btn, .tiktok-icon-btn, .keysystem-icon-btn {
             display: flex; align-items: center; justify-content: center;
-            border: none; padding: 0.625rem; border-radius: 10px;
+            border: none; padding: 0.5rem; border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
-            width: 44px; height: 44px;
+            transition: all 0.2s ease;
+            width: 36px; height: 36px;
         }
-        .discord-icon-btn { background: linear-gradient(135deg, #5865f2, #7289da); box-shadow: 0 4px 16px rgba(88,101,242,0.25); }
-        .youtube-icon-btn { background: linear-gradient(135deg, #ff0000, #cc0000); box-shadow: 0 4px 16px rgba(255,0,0,0.25); }
-        .tiktok-icon-btn { background: linear-gradient(135deg, #000000, #ff0050); box-shadow: 0 4px 16px rgba(255,0,80,0.25); }
+        .discord-icon-btn { background: linear-gradient(135deg, #5865f2, #7289da); }
+        .youtube-icon-btn { background: linear-gradient(135deg, #ff0000, #cc0000); }
+        .tiktok-icon-btn { background: linear-gradient(135deg, #000000, #ff0050); }
         .keysystem-icon-btn { background: transparent; border: 1px solid var(--border-subtle); }
-        .discord-icon-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 24px rgba(88,101,242,0.4); }
-        .youtube-icon-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 24px rgba(255,0,0,0.4); }
-        .tiktok-icon-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 24px rgba(255,0,80,0.4); }
-        .keysystem-icon-btn:hover { transform: translateY(-2px) scale(1.02); border-color: var(--accent-primary); }
-        .discord-icon, .youtube-icon, .tiktok-icon, .keysystem-icon { width: 20px; height: 20px; fill: white; }
+        .discord-icon-btn:hover, .youtube-icon-btn:hover, .tiktok-icon-btn:hover { transform: scale(1.1); }
+        .keysystem-icon-btn:hover { border-color: var(--accent-primary); transform: scale(1.1); }
+        .discord-icon, .youtube-icon, .tiktok-icon { width: 18px; height: 18px; fill: white; }
 
         /* ── Content ── */
         .content {
@@ -538,10 +566,9 @@
             #scriptsContainer { columns: 2; }
         }
         @media (max-width: 768px) {
-            .navbar { padding: 0.6rem 1rem; gap: 0.4rem; }
-            .tabs { gap: 0.3rem; }
+            .navbar { padding: 0.6rem 1rem; gap: 0.4rem; }            .tabs { gap: 0.3rem; }
             .tab { padding: 0.35rem 0.6rem; font-size: 0.72rem; white-space: nowrap; flex-shrink: 0; }
-            .social-bar { padding: 0.4rem 1rem; gap: 0.35rem; }
+
             .discord-icon-btn, .youtube-icon-btn, .tiktok-icon-btn, .keysystem-icon-btn { width: 34px; height: 34px; padding: 0.4rem; }
             .discord-icon, .youtube-icon, .tiktok-icon, .keysystem-icon { width: 16px; height: 16px; }
             #mainTab { padding: 3rem 1rem; }
@@ -998,7 +1025,27 @@
     </button>
 
     <nav class="navbar">
-        <div class="tabs">
+        <div class="nav-brand">KittyScripts</div>
+        <div class="nav-right">
+            <div class="social-icons-nav">
+                <button class="discord-icon-btn" onclick="window.open('https://discord.gg/TdaWNwNAMa','_blank')" aria-label="Discord">
+                    <svg class="discord-icon" viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+                </button>
+                <button class="youtube-icon-btn" onclick="window.open('https://www.youtube.com/@KittyScriptsRBLX','_blank')" aria-label="YouTube">
+                    <svg class="youtube-icon" viewBox="0 0 461.001 461.001"><path d="M365.257,67.393H95.744C42.866,67.393,0,110.259,0,163.137v134.728c0,52.878,42.866,95.744,95.744,95.744h269.513c52.878,0,95.744-42.866,95.744-95.744V163.137C461.001,110.259,418.135,67.393,365.257,67.393z M300.506,237.056l-126.06,60.123c-3.359,1.602-7.239-0.847-7.239-4.568V168.607c0-3.774,3.982-6.22,7.348-4.512l126.06,63.881C304.563,229.873,304.464,235.423,300.506,237.056z"/></svg>
+                </button>
+                <button class="tiktok-icon-btn" onclick="window.open('https://www.tiktok.com/@kittyscriptsrblx','_blank')" aria-label="TikTok">
+                    <svg class="tiktok-icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                </button>
+                <button class="keysystem-icon-btn" onclick="window.open('https://zxkuhl.github.io/KEY-system/','_blank')" aria-label="Key System">
+                    <img src="https://raw.githubusercontent.com/jayzioncheeks/KittyScripts-Hub/refs/heads/main/X%20logo.png" alt="Key System" style="width:20px;height:20px;object-fit:contain;">
+                </button>
+            </div>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="hamburger-dropdown" id="hamburgerDropdown">
             <div class="tab active" data-tab="main">Main</div>
             <div class="tab" data-tab="scripts">Scripts</div>
             <div class="tab" data-tab="executors">Executors</div>
@@ -1006,20 +1053,6 @@
             <div class="tab" data-tab="obfuscator">🔒 Obfuscator</div>
         </div>
     </nav>
-    <div class="social-bar">
-        <button class="discord-icon-btn" onclick="window.open('https://discord.gg/TdaWNwNAMa','_blank')" aria-label="Discord">
-            <svg class="discord-icon" viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
-        </button>
-        <button class="youtube-icon-btn" onclick="window.open('https://www.youtube.com/@KittyScriptsRBLX','_blank')" aria-label="YouTube">
-            <svg class="youtube-icon" viewBox="0 0 461.001 461.001"><path d="M365.257,67.393H95.744C42.866,67.393,0,110.259,0,163.137v134.728c0,52.878,42.866,95.744,95.744,95.744h269.513c52.878,0,95.744-42.866,95.744-95.744V163.137C461.001,110.259,418.135,67.393,365.257,67.393z M300.506,237.056l-126.06,60.123c-3.359,1.602-7.239-0.847-7.239-4.568V168.607c0-3.774,3.982-6.22,7.348-4.512l126.06,63.881C304.563,229.873,304.464,235.423,300.506,237.056z"/></svg>
-        </button>
-        <button class="tiktok-icon-btn" onclick="window.open('https://www.tiktok.com/@kittyscriptsrblx','_blank')" aria-label="TikTok">
-            <svg class="tiktok-icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
-        </button>
-        <button class="keysystem-icon-btn" onclick="window.open('https://zxkuhl.github.io/KEY-system/','_blank')" aria-label="Key System">
-            <img src="https://raw.githubusercontent.com/jayzioncheeks/KittyScripts-Hub/refs/heads/main/X%20logo.png" alt="Key System" style="width:28px;height:28px;object-fit:contain;">
-        </button>
-    </div>
 
     <main class="content">
         <section id="mainTab">
@@ -1647,6 +1680,19 @@
         updateFavBadge();
 
         // ── Tab switching ──
+        // ── Hamburger menu ──
+        const hamburgerBtn      = document.getElementById('hamburgerBtn');
+        const hamburgerDropdown = document.getElementById('hamburgerDropdown');
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            hamburgerBtn.classList.toggle('open');
+            hamburgerDropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('open');
+            hamburgerDropdown.classList.remove('open');
+        });
+
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 const name = tab.dataset.tab;
@@ -1659,6 +1705,9 @@
                 document.getElementById('obfuscatorTab').style.display  = name === 'obfuscator'  ? 'block' : 'none';
                 if (name === 'scripts'   && !allScripts.length) fetchScripts();
                 if (name === 'executors') renderExecutors();
+                // Close dropdown after selecting a tab
+                hamburgerBtn.classList.remove('open');
+                hamburgerDropdown.classList.remove('open');
             });
         });
 

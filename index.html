@@ -1854,28 +1854,27 @@
             function wrapLoad(src, level) {
                 let current = src;
                 for (let i = 0; i < level; i++) {
-                    const shift = rand(40, 90); // random shift each layer
-                    // Encode: shift every byte by `shift`, store as escaped string
-                    let encoded = '';
+                    const shift = rand(40, 90);
+                    // Build array of shifted byte values
+                    const bytes = [];
                     for (let j = 0; j < current.length; j++) {
-                        const b = (current.charCodeAt(j) + shift) % 256;
-                        // Use decimal escapes only for non-printable or quote/backslash chars
-                        if (b < 32 || b > 126 || b === 34 || b === 92) {
-                            encoded += '\\' + b;
-                        } else {
-                            encoded += String.fromCharCode(b);
-                        }
+                        bytes.push((current.charCodeAt(j) + shift) % 256);
                     }
                     const fv = randIdent();
-                    const sv = randIdent();
-                    const iv = randIdent();
-                    const cv = randIdent();
+                    const tv = randIdent();
                     const rv = randIdent();
+                    const iv = randIdent();
+                    const vv = randIdent();
+                    // Chunk into rows of 100 numbers to avoid long-line issues
+                    const rows = [];
+                    for (let j = 0; j < bytes.length; j += 100) {
+                        rows.push(bytes.slice(j, j + 100).join(','));
+                    }
                     current = [
                         `--[[ KittyScripts Obfuscator ]]`,
-                        `local ${sv}="${encoded}"`,
+                        `local ${tv}={${rows.join(',')}}`,
                         `local ${rv}={}`,
-                        `for ${iv}=1,#${sv} do ${rv}[${iv}]=string.char((string.byte(${sv},${iv})-${shift})%256) end`,
+                        `for ${iv},${vv} in ipairs(${tv}) do ${rv}[${iv}]=string.char((${vv}-${shift})%256) end`,
                         `local ${fv}=loadstring(table.concat(${rv}))`,
                         `if ${fv} then ${fv}() end`,
                     ].join('\n');

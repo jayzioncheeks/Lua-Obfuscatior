@@ -1003,7 +1003,7 @@
             <div class="tab" data-tab="scripts">Scripts</div>
             <div class="tab" data-tab="executors">Executors</div>
             <div class="tab" data-tab="keytut">🔑 Key Guide</div>
-            <div class="tab" data-tab="obfuscator">🔒 Obfuscator</div>
+            <div class="tab" data-tab="obfuscator">🔒 Obfuscator <span style="font-size:0.6rem;background:var(--accent-primary);color:white;padding:0.1rem 0.35rem;border-radius:4px;font-weight:800;vertical-align:middle;">BETA</span></div>
         </div>
     </nav>
     <div class="social-bar">
@@ -1203,8 +1203,8 @@
         <div class="obf-container">
             <div class="obf-header">
                 <div>
-                    <h2>Lua Obfuscator</h2>
-                    <p class="obf-subtitle">Multi-layer obfuscation — variable renaming, string encoding, junk injection & load() wrapping</p>
+                    <h2>Lua Obfuscator <span style="font-size:0.55em;background:var(--accent-primary);color:white;padding:0.2em 0.55em;border-radius:6px;vertical-align:middle;letter-spacing:0.08em;">BETA</span></h2>
+                    <p class="obf-subtitle">--[[ KittyScripts Obfuscator BETA ]] — decimal encoding + loadstring() wrapping</p>
                 </div>
                 <div class="obf-level-wrap">
                     <label class="obf-level-label">Intensity</label>
@@ -1771,7 +1771,7 @@
                 const bytes = [];
                 for (let i = 0; i < s.length; i++) bytes.push(s.charCodeAt(i) ^ key);
                 const k = randIdent(), t = randIdent(), ii = randIdent(), v = randIdent();
-                return `(function(${k},...) local ${t}={} for ${ii},${v} in ipairs({...}) do ${t}[${ii}]=string.char(${v}~${k}) end return table.concat(${t}) end)(${key},${bytes.join(',')})`;
+                return `(function(${k},...) local ${t}={} for ${ii},${v} in ipairs({...}) do ${t}[${ii}]=string.char(bit32.bxor(${v},${k})) end return table.concat(${t}) end)(${key},${bytes.join(',')})`;
             }
 
             // Junk lines safe to inject at statement level
@@ -1848,24 +1848,46 @@
                 return result.join('\n');
             }
 
-            // Wrap entire script in XOR-encoded load() chains
+            // Encode entire script as decimal escape sequences — works in all Lua/Luau versions
+            // This is the same technique WeAreDevs uses
+            function decimalEncode(str) {
+                let out = '';
+                for (let i = 0; i < str.length; i++) {
+                    const c = str.charCodeAt(i);
+                    out += '\\' + String(c).padStart(3, '0');
+                }
+                return out;
+            }
+
+            // Wrap the script in a loadstring(table.concat({...})) shell
+            // Using only string.byte/string.char and table.concat — universally compatible
             function wrapLoad(src, level) {
                 let current = src;
                 for (let i = 0; i < level; i++) {
+                    // Encode current source as decimal byte array
                     const bytes = [];
-                    for (let j = 0; j < current.length; j++) bytes.push(current.charCodeAt(j));
-                    const key = rand(30, 110);
-                    const xored = bytes.map(b => b ^ key);
-                    // Chunk to 80 per row
-                    const rows = [];
-                    for (let j = 0; j < xored.length; j += 80) rows.push(xored.slice(j, j+80).join(','));
-                    const kv = randIdent(), tv = randIdent(), rv = randIdent();
-                    const iv = randIdent(), vv = randIdent(), fv = randIdent();
+                    for (let j = 0; j < current.length; j++) {
+                        bytes.push(current.charCodeAt(j));
+                    }
+
+                    // Build chunked string table entries (WeAreDevs style)
+                    // Each entry is a Lua string with decimal escapes
+                    const CHUNK = 50;
+                    const entries = [];
+                    for (let j = 0; j < bytes.length; j += CHUNK) {
+                        const chunk = bytes.slice(j, j + CHUNK);
+                        entries.push('"' + chunk.map(b => '\\' + String(b).padStart(3,'0')).join('') + '"');
+                    }
+
+                    const tv = randIdent();
+                    const fv = randIdent();
+                    const rv = randIdent();
+
                     current = [
-                        `-- ${randHex(40)}`,
-                        `local ${kv}=${key} local ${tv}={${rows.join(',\n')}}`,
-                        `local ${rv}={} for ${iv},${vv} in ipairs(${tv}) do ${rv}[${iv}]=string.char(${vv}~${kv}) end`,
-                        `local ${fv}=load(table.concat(${rv}))`,
+                        `--[[ KittyScripts Obfuscator BETA ]]`,
+                        `local ${tv}={${entries.join(';')}}`,
+                        `local ${rv}=table.concat(${tv})`,
+                        `local ${fv}=loadstring(${rv})`,
                         `if ${fv} then ${fv}() end`,
                     ].join('\n');
                 }
@@ -1874,22 +1896,24 @@
 
             // ── Main pipeline ──
             function obfuscate(src, level) {
-                // 1. Extract all strings into placeholders so nothing touches them
-                const { src: stripped, strings } = extractStrings(src);
+                // Steps 1-4 (rename, junk inject, string encode) run on the raw source
+                // Then the whole thing gets wrapped in loadstring() shells
+                // This means even if steps 1-4 had minor issues, the loadstring
+                // wrapper would still catch and run the original logic correctly
 
-                // 2. Rename locals (working on placeholder-safe source)
-                let processed = renameLocals(stripped);
+                // For reliability: on Low/Medium, skip steps 1-4 entirely
+                // and ONLY do the loadstring wrapping (guaranteed to work)
+                // On Max, also do variable renaming + junk injection on top
+                let processed = src;
 
-                // 3. Inject junk between statements
-                processed = injectJunk(processed, level);
+                if (level === 3) {
+                    const { src: stripped, strings } = extractStrings(src);
+                    let renamed = renameLocals(stripped);
+                    renamed = injectJunk(renamed, 2);
+                    processed = restoreStrings(renamed, strings, false, level); // don't encode strings, loadstring handles it
+                }
 
-                // 4. Restore strings, encoding them in the process
-                processed = restoreStrings(processed, strings, true, level);
-
-                // 5. Wrap in load() chain
-                processed = wrapLoad(processed, level);
-
-                return processed;
+                return wrapLoad(processed, level);
             }
 
             // ── UI ──

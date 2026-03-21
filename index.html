@@ -725,6 +725,73 @@
             .obf-header h2 { font-size: 1.4rem; }
         }
 
+
+        /* ══ Downloader Tab ══ */
+        #downloaderTab { display: none; position: relative; z-index: 1; }
+        .dl-container { max-width: 760px; margin: 0 auto; padding: 3rem 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        .dl-header { text-align: center; }
+        .dl-header h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; background: linear-gradient(135deg, var(--accent-bright), var(--accent-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.4rem; }
+        .dl-header p { font-size: 0.9rem; color: var(--text-dim); font-weight: 600; }
+        .dl-platform-tabs { display: flex; gap: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 0.35rem; }
+        .dl-plat-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem 1rem; border-radius: 9px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-muted); }
+        .dl-plat-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .dl-plat-btn:hover { color: var(--text-primary); }
+        .dl-plat-btn.active { background: var(--bg-card); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        .dl-plat-btn.tiktok.active { color: #ff2d55; }
+        .dl-plat-btn.youtube.active { color: #ff0000; }
+        .dl-input-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+        .dl-input-row { display: flex; gap: 0.75rem; align-items: stretch; }
+        .dl-url-input { flex: 1; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1.25rem; color: var(--text-primary); font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; transition: all 0.25s ease; outline: none; }
+        .dl-url-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .dl-url-input::placeholder { color: var(--text-dim); }
+        .dl-paste-btn { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1rem; color: var(--text-muted); cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; transition: all 0.2s ease; white-space: nowrap; display: flex; align-items: center; gap: 0.4rem; }
+        .dl-paste-btn:hover { border-color: var(--accent-primary); color: var(--accent-bright); }
+        .dl-paste-btn svg { width: 15px; height: 15px; }
+        .dl-options-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .dl-quality-btn { padding: 0.35rem 0.85rem; border-radius: 20px; border: 1px solid var(--border-subtle); background: var(--bg-elevated); color: var(--text-muted); font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+        .dl-quality-btn:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+        .dl-quality-btn.active { background: linear-gradient(135deg, var(--accent-primary), var(--accent-bright)); border-color: transparent; color: white; }
+        .dl-audio-toggle { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); cursor: pointer; user-select: none; }
+        .dl-audio-toggle input { display: none; }
+        .dl-toggle-track { width: 36px; height: 20px; border-radius: 10px; background: var(--border-bright); position: relative; transition: background 0.2s; flex-shrink: 0; }
+        .dl-toggle-track::after { content: \'\'; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: white; transition: left 0.2s; }
+        .dl-audio-toggle input:checked ~ .dl-toggle-track { background: var(--accent-primary); }
+        .dl-audio-toggle input:checked ~ .dl-toggle-track::after { left: 19px; }
+        .dl-fetch-btn { width: 100%; background: linear-gradient(135deg, var(--accent-primary), #6d28d9); border: none; color: white; border-radius: 12px; padding: 0.95rem 2rem; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; box-shadow: 0 4px 20px rgba(124,58,237,0.4); }
+        .dl-fetch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,0.5); }
+        .dl-fetch-btn:active { transform: translateY(0); }
+        .dl-fetch-btn:disabled { opacity: 0.5; pointer-events: none; }
+        .dl-fetch-btn svg { width: 18px; height: 18px; }
+        .dl-result { background: var(--bg-card); border: 1px solid var(--border-bright); border-radius: 16px; overflow: hidden; display: none; animation: fadeInUp 0.4s ease; }
+        .dl-result.visible { display: block; }
+        .dl-result-inner { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+        .dl-media-preview { display: flex; gap: 1.25rem; align-items: flex-start; }
+        .dl-thumb { width: 120px; height: 80px; object-fit: cover; border-radius: 10px; flex-shrink: 0; border: 1px solid var(--border-subtle); background: var(--bg-elevated); }
+        .dl-meta { flex: 1; min-width: 0; }
+        .dl-meta-title { font-weight: 700; font-size: 0.95rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.3rem; }
+        .dl-meta-info { font-size: 0.78rem; color: var(--text-dim); font-weight: 600; }
+        .dl-meta-platform { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 5px; margin-top: 0.4rem; }
+        .dl-meta-platform.tiktok { background: rgba(255,45,85,0.12); color: #ff2d55; }
+        .dl-meta-platform.youtube { background: rgba(255,0,0,0.1); color: #ff4444; }
+        .dl-download-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .dl-dl-btn { flex: 1; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.25rem; border-radius: 10px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; cursor: pointer; text-decoration: none; transition: all 0.2s ease; }
+        .dl-dl-btn.video { background: linear-gradient(135deg, var(--accent-primary), var(--accent-bright)); color: white; box-shadow: 0 4px 14px var(--accent-glow); }
+        .dl-dl-btn.video:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+        .dl-dl-btn.audio { background: var(--bg-elevated); border: 1px solid var(--border-bright); color: var(--text-primary); }
+        .dl-dl-btn.audio:hover { border-color: var(--accent-primary); }
+        .dl-dl-btn svg { width: 16px; height: 16px; }
+        .dl-status { display: none; text-align: center; padding: 2rem; border-radius: 12px; border: 1px dashed var(--border-bright); }
+        .dl-status.visible { display: block; }
+        .dl-status.loading { color: var(--text-muted); }
+        .dl-status.error { color: var(--danger); border-color: var(--danger); background: rgba(239,68,68,0.05); }
+        .dl-spinner { width: 32px; height: 32px; margin: 0 auto 0.75rem; border: 3px solid var(--border-subtle); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .dl-status p { font-weight: 600; font-size: 0.9rem; }
+        .dl-supported { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+        .dl-site-pill { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.85rem; border-radius: 20px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+        .dl-site-pill.tiktok { border-color: rgba(255,45,85,0.3); color: #ff2d55; }
+        .dl-site-pill.youtube { border-color: rgba(255,0,0,0.3); color: #ff4444; }
+        @media (max-width: 768px) { .dl-container { padding: 1.5rem 1rem; } .dl-input-row { flex-direction: column; } .dl-media-preview { flex-direction: column; } .dl-thumb { width: 100%; height: 160px; } .dl-audio-toggle { margin-left: 0; } }
+
         /* ── Responsive general ── */
         @media (max-width: 1100px) { #scriptsContainer { columns: 2; } #executorsContainer { columns: 2; } }
         @media (max-width: 768px) {
@@ -777,6 +844,7 @@
             <div class="tab" data-tab="executors">Executors</div>
             <div class="tab" data-tab="keytut">🔑 Key Guide</div>
             <div class="tab" data-tab="obfuscator">🔒 Obfuscator</div>
+            <div class="tab" data-tab="downloader">⬇️ Downloader</div>
         </div>
     </nav>
 
@@ -959,6 +1027,90 @@
                         </svg>
                         Obfuscate
                     </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         ── DOWNLOADER TAB ──────────────────────
+         ══════════════════════════════════════════ -->
+    <section id="downloaderTab">
+        <div class="dl-container">
+            <div class="dl-header">
+                <h2>Video Downloader</h2>
+                <p>Download TikTok &amp; YouTube videos — no watermark, free</p>
+            </div>
+
+            <div class="dl-platform-tabs">
+                <button class="dl-plat-btn tiktok active" data-platform="tiktok">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                    TikTok
+                </button>
+                <button class="dl-plat-btn youtube" data-platform="youtube">
+                    <svg viewBox="0 0 461.001 461.001" fill="currentColor"><path d="M365.257,67.393H95.744C42.866,67.393,0,110.259,0,163.137v134.728c0,52.878,42.866,95.744,95.744,95.744h269.513c52.878,0,95.744-42.866,95.744-95.744V163.137C461.001,110.259,418.135,67.393,365.257,67.393z M300.506,237.056l-126.06,60.123c-3.359,1.602-7.239-0.847-7.239-4.568V168.607c0-3.774,3.982-6.22,7.348-4.512l126.06,63.881C304.563,229.873,304.464,235.423,300.506,237.056z"/></svg>
+                    YouTube
+                </button>
+            </div>
+
+            <div class="dl-input-card">
+                <div class="dl-input-row">
+                    <input class="dl-url-input" id="dlUrlInput" type="url" placeholder="Paste your TikTok or YouTube URL here…" autocomplete="off" spellcheck="false">
+                    <button class="dl-paste-btn" id="dlPasteBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                        Paste
+                    </button>
+                </div>
+                <div class="dl-options-row" id="dlYtOptions" style="display:none;">
+                    <span style="font-size:0.78rem;font-weight:700;color:var(--text-dim);">Quality:</span>
+                    <button class="dl-quality-btn active" data-q="1080">1080p</button>
+                    <button class="dl-quality-btn" data-q="720">720p</button>
+                    <button class="dl-quality-btn" data-q="480">480p</button>
+                    <button class="dl-quality-btn" data-q="360">360p</button>
+                    <label class="dl-audio-toggle">
+                        <input type="checkbox" id="dlAudioOnly">
+                        <div class="dl-toggle-track"></div>
+                        Audio only
+                    </label>
+                </div>
+                <button class="dl-fetch-btn" id="dlFetchBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Get Download Link
+                </button>
+            </div>
+
+            <div class="dl-status" id="dlStatus">
+                <div class="dl-spinner"></div>
+                <p id="dlStatusMsg">Fetching video info…</p>
+            </div>
+
+            <div class="dl-result" id="dlResult">
+                <div class="dl-result-inner">
+                    <div class="dl-media-preview">
+                        <img class="dl-thumb" id="dlThumb" src="" alt="thumbnail">
+                        <div class="dl-meta">
+                            <div class="dl-meta-title" id="dlTitle"></div>
+                            <div class="dl-meta-info" id="dlInfo"></div>
+                            <div class="dl-meta-platform" id="dlPlatformBadge"></div>
+                        </div>
+                    </div>
+                    <div class="dl-download-btns" id="dlDownloadBtns"></div>
+                </div>
+            </div>
+
+            <div class="dl-supported">
+                <div class="dl-site-pill tiktok">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                    TikTok (no watermark)
+                </div>
+                <div class="dl-site-pill youtube">
+                    <svg width="13" height="13" viewBox="0 0 461.001 461.001" fill="currentColor"><path d="M365.257,67.393H95.744C42.866,67.393,0,110.259,0,163.137v134.728c0,52.878,42.866,95.744,95.744,95.744h269.513c52.878,0,95.744-42.866,95.744-95.744V163.137C461.001,110.259,418.135,67.393,365.257,67.393z M300.506,237.056l-126.06,60.123c-3.359,1.602-7.239-0.847-7.239-4.568V168.607c0-3.774,3.982-6.22,7.348-4.512l126.06,63.881C304.563,229.873,304.464,235.423,300.506,237.056z"/></svg>
+                    YouTube (video + audio)
+                </div>
+                <div class="dl-site-pill" style="color:var(--text-dim);">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Powered by cobalt.tools
                 </div>
             </div>
         </div>
@@ -1227,6 +1379,7 @@
                 document.getElementById('executorsTab').style.display             = name === 'executors'  ? 'block' : 'none';
                 document.getElementById('keytutTab').style.display                = name === 'keytut'     ? 'block' : 'none';
                 document.getElementById('obfuscatorTab').style.display            = name === 'obfuscator' ? 'block' : 'none';
+                document.getElementById('downloaderTab').style.display             = name === 'downloader' ? 'block' : 'none';
                 if (name === 'scripts'   && !allScripts.length) fetchScripts();
                 if (name === 'executors') renderExecutors();
             });
@@ -1456,6 +1609,262 @@
                 catch { showToast('Clipboard denied \u2014 paste manually (Ctrl+V)', 'error'); }
             });
         })();
+
+        // ══════════════════════════════════════════════════════════════
+        // Downloader — uses cobalt.tools open API (supports TT + YT)
+        // ══════════════════════════════════════════════════════════════
+        (function() {
+            const urlInput    = document.getElementById('dlUrlInput');
+            const pasteBtn    = document.getElementById('dlPasteBtn');
+            const fetchBtn    = document.getElementById('dlFetchBtn');
+            const statusEl    = document.getElementById('dlStatus');
+            const statusMsg   = document.getElementById('dlStatusMsg');
+            const resultEl    = document.getElementById('dlResult');
+            const dlThumb     = document.getElementById('dlThumb');
+            const dlTitle     = document.getElementById('dlTitle');
+            const dlInfo      = document.getElementById('dlInfo');
+            const dlPlatBadge = document.getElementById('dlPlatformBadge');
+            const dlBtns      = document.getElementById('dlDownloadBtns');
+            const ytOptions   = document.getElementById('dlYtOptions');
+            const audioToggle = document.getElementById('dlAudioOnly');
+
+            let activePlatform = 'tiktok';
+            let selectedQuality = '1080';
+
+            // Platform toggle
+            document.querySelectorAll('.dl-plat-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.dl-plat-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activePlatform = btn.dataset.platform;
+                    ytOptions.style.display = activePlatform === 'youtube' ? 'flex' : 'none';
+                    urlInput.placeholder = activePlatform === 'tiktok'
+                        ? 'Paste your TikTok URL here…'
+                        : 'Paste your YouTube URL here…';
+                    hideAll();
+                });
+            });
+
+            // Quality buttons
+            document.querySelectorAll('.dl-quality-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.dl-quality-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedQuality = btn.dataset.q;
+                });
+            });
+
+            // Paste button
+            pasteBtn.addEventListener('click', async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    urlInput.value = text.trim();
+                    // Auto-detect platform from URL
+                    if (text.includes('tiktok.com') || text.includes('vm.tiktok')) {
+                        setActivePlatform('tiktok');
+                    } else if (text.includes('youtube.com') || text.includes('youtu.be')) {
+                        setActivePlatform('youtube');
+                    }
+                } catch { showToast('Clipboard denied — paste manually', 'error'); }
+            });
+
+            function setActivePlatform(p) {
+                activePlatform = p;
+                document.querySelectorAll('.dl-plat-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.platform === p);
+                });
+                ytOptions.style.display = p === 'youtube' ? 'flex' : 'none';
+            }
+
+            function hideAll() {
+                statusEl.className = 'dl-status';
+                resultEl.className = 'dl-result';
+            }
+
+            function showStatus(msg, type = 'loading') {
+                hideAll();
+                statusMsg.textContent = msg;
+                statusEl.className = 'dl-status visible ' + type;
+            }
+
+            function showResult(data) {
+                statusEl.className = 'dl-status';
+                resultEl.className = 'dl-result visible';
+
+                // Thumbnail
+                if (data.thumbnail) {
+                    dlThumb.src = data.thumbnail;
+                    dlThumb.style.display = 'block';
+                } else {
+                    dlThumb.style.display = 'none';
+                }
+
+                dlTitle.textContent = data.title || 'Video';
+                dlInfo.textContent = data.quality ? 'Quality: ' + data.quality : '';
+
+                // Platform badge
+                dlPlatBadge.className = 'dl-meta-platform ' + activePlatform;
+                dlPlatBadge.textContent = activePlatform === 'tiktok' ? '📱 TikTok' : '▶️ YouTube';
+
+                // Download buttons
+                dlBtns.innerHTML = '';
+
+                if (data.url) {
+                    const vBtn = document.createElement('a');
+                    vBtn.className = 'dl-dl-btn video';
+                    vBtn.href = data.url;
+                    vBtn.target = '_blank';
+                    vBtn.rel = 'noopener';
+                    // Force download via fetch + blob for direct download
+                    vBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Video';
+                    vBtn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        triggerDownload(data.url, (data.title || 'video') + '.mp4');
+                    });
+                    dlBtns.appendChild(vBtn);
+                }
+
+                if (data.audio) {
+                    const aBtn = document.createElement('a');
+                    aBtn.className = 'dl-dl-btn audio';
+                    aBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Audio Only (MP3)';
+                    aBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        triggerDownload(data.audio, (data.title || 'audio') + '.mp3');
+                    });
+                    dlBtns.appendChild(aBtn);
+                }
+
+                if (dlBtns.children.length === 0) {
+                    dlBtns.innerHTML = '<p style="color:var(--text-dim);font-size:0.85rem;font-weight:600;">No downloadable streams found for this URL.</p>';
+                }
+            }
+
+            async function triggerDownload(url, filename) {
+                showToast('Starting download…', 'success');
+                // Open in new tab as fallback — cobalt returns a direct stream URL
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+
+            // Main fetch via cobalt.tools API
+            fetchBtn.addEventListener('click', async () => {
+                const url = urlInput.value.trim();
+                if (!url) { showToast('Paste a URL first!', 'error'); return; }
+
+                // Validate URL format
+                const isTikTok  = /tiktok\.com|vm\.tiktok/i.test(url);
+                const isYouTube = /youtube\.com|youtu\.be/i.test(url);
+
+                if (!isTikTok && !isYouTube) {
+                    showToast('Only TikTok and YouTube URLs are supported', 'error');
+                    return;
+                }
+
+                showStatus('Fetching video info…', 'loading');
+                fetchBtn.disabled = true;
+
+                try {
+                    // cobalt.tools public API — free, no auth needed
+                    const audioOnly = audioToggle.checked;
+                    const quality   = selectedQuality;
+
+                    const body = {
+                        url: url,
+                        videoQuality: quality,
+                        audioFormat: 'mp3',
+                        audioBitrate: '128',
+                        downloadMode: audioOnly ? 'audio' : 'auto',
+                        filenameStyle: 'pretty',
+                        tiktokFullAudio: false,
+                        tiktokH265: false,
+                        youtubeVideoCodec: 'h264',
+                    };
+
+                    const res = await fetch('https://api.cobalt.tools/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify(body),
+                    });
+
+                    const data = await res.json();
+
+                    if (data.status === 'error') {
+                        showStatus(data.error?.code || 'Could not fetch this video. Try a different URL.', 'error');
+                        return;
+                    }
+
+                    if (data.status === 'redirect' || data.status === 'stream') {
+                        // Single stream result
+                        showResult({
+                            title: data.filename || (isYouTube ? 'YouTube Video' : 'TikTok Video'),
+                            url: data.url,
+                            audio: null,
+                            thumbnail: null,
+                            quality: quality + 'p',
+                        });
+                        return;
+                    }
+
+                    if (data.status === 'picker') {
+                        // Multiple streams (YouTube video+audio separate, or photo carousels)
+                        const videoStream = data.picker?.find(p => p.type === 'video' || (!p.type && p.url));
+                        const audioStream = data.audio;
+                        showResult({
+                            title: data.filename || 'Video',
+                            url: videoStream?.url || null,
+                            audio: audioStream || null,
+                            thumbnail: videoStream?.thumb || null,
+                            quality: quality + 'p',
+                        });
+                        return;
+                    }
+
+                    // Fallback for tunnel/other statuses
+                    if (data.url) {
+                        showResult({
+                            title: data.filename || 'Video',
+                            url: data.url,
+                            audio: null,
+                            thumbnail: null,
+                            quality: '',
+                        });
+                        return;
+                    }
+
+                    showStatus('Unexpected response from server. Try again.', 'error');
+
+                } catch (err) {
+                    console.error(err);
+                    showStatus('Network error — could not reach download server. Check your connection.', 'error');
+                } finally {
+                    fetchBtn.disabled = false;
+                }
+            });
+
+            // Allow Enter key to trigger fetch
+            urlInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') fetchBtn.click();
+            });
+
+            // Auto-detect platform when typing/pasting URL
+            urlInput.addEventListener('input', () => {
+                const v = urlInput.value;
+                if (v.includes('tiktok.com') || v.includes('vm.tiktok')) setActivePlatform('tiktok');
+                else if (v.includes('youtube.com') || v.includes('youtu.be')) setActivePlatform('youtube');
+                hideAll();
+            });
+        })();
+
     </script>
 </body>
 </html>

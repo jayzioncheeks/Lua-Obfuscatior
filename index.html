@@ -1110,7 +1110,7 @@
                 </div>
                 <div class="dl-site-pill" style="color:var(--text-dim);">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    Powered by cobalt.tools
+                    Powered by tikwm + y2mate
                 </div>
             </div>
         </div>
@@ -1611,7 +1611,9 @@
         })();
 
         // ══════════════════════════════════════════════════════════════
-        // Downloader — uses cobalt.tools open API (supports TT + YT)
+        // Downloader
+        //  TikTok  → tikwm.com API (free, no auth, no watermark)
+        //  YouTube → redirect to fastest public open download service
         // ══════════════════════════════════════════════════════════════
         (function() {
             const urlInput    = document.getElementById('dlUrlInput');
@@ -1631,7 +1633,6 @@
             let activePlatform = 'tiktok';
             let selectedQuality = '1080';
 
-            // Platform toggle
             document.querySelectorAll('.dl-plat-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.dl-plat-btn').forEach(b => b.classList.remove('active'));
@@ -1639,13 +1640,12 @@
                     activePlatform = btn.dataset.platform;
                     ytOptions.style.display = activePlatform === 'youtube' ? 'flex' : 'none';
                     urlInput.placeholder = activePlatform === 'tiktok'
-                        ? 'Paste your TikTok URL here…'
-                        : 'Paste your YouTube URL here…';
+                        ? 'Paste your TikTok URL here\u2026'
+                        : 'Paste your YouTube URL here\u2026';
                     hideAll();
                 });
             });
 
-            // Quality buttons
             document.querySelectorAll('.dl-quality-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.dl-quality-btn').forEach(b => b.classList.remove('active'));
@@ -1654,19 +1654,18 @@
                 });
             });
 
-            // Paste button
             pasteBtn.addEventListener('click', async () => {
                 try {
                     const text = await navigator.clipboard.readText();
                     urlInput.value = text.trim();
-                    // Auto-detect platform from URL
-                    if (text.includes('tiktok.com') || text.includes('vm.tiktok')) {
-                        setActivePlatform('tiktok');
-                    } else if (text.includes('youtube.com') || text.includes('youtu.be')) {
-                        setActivePlatform('youtube');
-                    }
-                } catch { showToast('Clipboard denied — paste manually', 'error'); }
+                    autoDetectPlatform(text);
+                } catch { showToast('Clipboard denied \u2014 paste manually', 'error'); }
             });
+
+            function autoDetectPlatform(v) {
+                if (/tiktok\.com|vm\.tiktok/i.test(v)) setActivePlatform('tiktok');
+                else if (/youtube\.com|youtu\.be/i.test(v)) setActivePlatform('youtube');
+            }
 
             function setActivePlatform(p) {
                 activePlatform = p;
@@ -1680,189 +1679,186 @@
                 statusEl.className = 'dl-status';
                 resultEl.className = 'dl-result';
             }
-
-            function showStatus(msg, type = 'loading') {
+            function showStatus(msg, type) {
                 hideAll();
                 statusMsg.textContent = msg;
-                statusEl.className = 'dl-status visible ' + type;
+                statusEl.className = 'dl-status visible ' + (type || 'loading');
             }
-
             function showResult(data) {
                 statusEl.className = 'dl-status';
                 resultEl.className = 'dl-result visible';
-
-                // Thumbnail
-                if (data.thumbnail) {
-                    dlThumb.src = data.thumbnail;
-                    dlThumb.style.display = 'block';
-                } else {
-                    dlThumb.style.display = 'none';
-                }
-
+                if (data.thumbnail) { dlThumb.src = data.thumbnail; dlThumb.style.display = 'block'; }
+                else { dlThumb.style.display = 'none'; }
                 dlTitle.textContent = data.title || 'Video';
-                dlInfo.textContent = data.quality ? 'Quality: ' + data.quality : '';
-
-                // Platform badge
-                dlPlatBadge.className = 'dl-meta-platform ' + activePlatform;
-                dlPlatBadge.textContent = activePlatform === 'tiktok' ? '📱 TikTok' : '▶️ YouTube';
-
-                // Download buttons
+                dlInfo.textContent  = data.info || '';
+                dlPlatBadge.className   = 'dl-meta-platform ' + activePlatform;
+                dlPlatBadge.textContent = activePlatform === 'tiktok' ? '\uD83D\uDCF1 TikTok' : '\u25B6\uFE0F YouTube';
                 dlBtns.innerHTML = '';
-
-                if (data.url) {
-                    const vBtn = document.createElement('a');
-                    vBtn.className = 'dl-dl-btn video';
-                    vBtn.href = data.url;
-                    vBtn.target = '_blank';
-                    vBtn.rel = 'noopener';
-                    // Force download via fetch + blob for direct download
-                    vBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Video';
-                    vBtn.addEventListener('click', async (e) => {
-                        e.preventDefault();
-                        triggerDownload(data.url, (data.title || 'video') + '.mp4');
-                    });
-                    dlBtns.appendChild(vBtn);
-                }
-
-                if (data.audio) {
-                    const aBtn = document.createElement('a');
-                    aBtn.className = 'dl-dl-btn audio';
-                    aBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Audio Only (MP3)';
-                    aBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        triggerDownload(data.audio, (data.title || 'audio') + '.mp3');
-                    });
-                    dlBtns.appendChild(aBtn);
-                }
-
-                if (dlBtns.children.length === 0) {
-                    dlBtns.innerHTML = '<p style="color:var(--text-dim);font-size:0.85rem;font-weight:600;">No downloadable streams found for this URL.</p>';
+                (data.buttons || []).forEach(b => {
+                    const el = document.createElement('a');
+                    el.className = 'dl-dl-btn ' + b.cls;
+                    el.href = b.url;
+                    el.target = '_blank';
+                    el.rel = 'noopener noreferrer';
+                    el.innerHTML = b.label;
+                    dlBtns.appendChild(el);
+                });
+                if (!dlBtns.children.length) {
+                    dlBtns.innerHTML = '<p style="color:var(--text-dim);font-size:0.85rem;font-weight:600;">No downloadable streams found.</p>';
                 }
             }
 
-            async function triggerDownload(url, filename) {
-                showToast('Starting download…', 'success');
-                // Open in new tab as fallback — cobalt returns a direct stream URL
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.target = '_blank';
-                a.rel = 'noopener';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+            // ── TikTok via tikwm.com (free, no auth, returns no-watermark mp4) ──
+            async function fetchTikTok(url) {
+                showStatus('Fetching TikTok video\u2026', 'loading');
+                // tikwm.com is a widely-used public TikTok scraper API
+                const apiUrl = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1';
+                const res  = await fetch(apiUrl);
+                const json = await res.json();
+                if (json.code !== 0 || !json.data) {
+                    throw new Error(json.msg || 'TikTok fetch failed');
+                }
+                const d = json.data;
+                const buttons = [];
+                // HD mp4 (no watermark)
+                if (d.hdplay) buttons.push({
+                    cls: 'video',
+                    url: d.hdplay,
+                    label: svgDl() + ' Download HD (No Watermark)'
+                });
+                else if (d.play) buttons.push({
+                    cls: 'video',
+                    url: d.play,
+                    label: svgDl() + ' Download Video (No Watermark)'
+                });
+                // Audio / music
+                if (d.music) buttons.push({
+                    cls: 'audio',
+                    url: d.music,
+                    label: svgMusic() + ' Download Audio (MP3)'
+                });
+                showResult({
+                    title:     d.title || 'TikTok Video',
+                    thumbnail: d.cover || d.origin_cover || null,
+                    info:      d.author ? '@' + d.author.unique_id + '  \u00b7  ' + fmtNum(d.play_count) + ' plays' : '',
+                    buttons,
+                });
             }
 
-            // Main fetch via cobalt.tools API
+            // ── YouTube — redirect to yt5s / y2mate style deep-link ──
+            // We use the free yt-dlp-web public instance at loader.to
+            async function fetchYouTube(url) {
+                showStatus('Preparing YouTube download\u2026', 'loading');
+                // Extract video ID
+                const idMatch = url.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/);
+                if (!idMatch) throw new Error('Could not parse YouTube video ID from URL');
+                const videoId = idMatch[1];
+                const q = audioToggle.checked ? 'mp3' : (selectedQuality + 'p');
+
+                // y2mate public API - widely used, free, no auth
+                // Step 1: analyse
+                showStatus('Analysing YouTube video\u2026', 'loading');
+                const analyseRes = await fetch('https://www.y2mate.com/mates/analyzeV2/ajax', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'k_query=' + encodeURIComponent(url) + '&k_page=home&hl=en&q_auto=0',
+                });
+                const analyseJson = await analyseRes.json();
+                if (!analyseJson.title) throw new Error('y2mate: could not analyse video');
+
+                const thumb = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+                const title = analyseJson.title;
+
+                // Find best matching format key
+                let fmtKey = null;
+                let fmtLabel = '';
+                if (audioToggle.checked) {
+                    // grab mp3 128k key
+                    const links = analyseJson.links?.mp3 || {};
+                    const k128 = Object.keys(links).find(k => links[k].q === '128kbps');
+                    const kAny = Object.keys(links)[0];
+                    fmtKey = k128 || kAny;
+                    fmtLabel = links[fmtKey]?.q || '128kbps';
+                } else {
+                    const links = analyseJson.links?.mp4 || {};
+                    // Try to match selected quality, fallback down
+                    const qualities = [selectedQuality, '720', '480', '360', '240'];
+                    for (const qs of qualities) {
+                        const found = Object.keys(links).find(k => links[k].q === qs + 'p');
+                        if (found) { fmtKey = found; fmtLabel = qs + 'p'; break; }
+                    }
+                    // If nothing matched grab first available
+                    if (!fmtKey) {
+                        fmtKey = Object.keys(links)[0];
+                        fmtLabel = links[fmtKey]?.q || 'Best';
+                    }
+                }
+
+                if (!fmtKey) throw new Error('No matching format found for this video');
+
+                // Step 2: convert (get download link)
+                showStatus('Generating download link\u2026', 'loading');
+                const convertRes = await fetch('https://www.y2mate.com/mates/convertV2/index', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'vid=' + videoId + '&k=' + fmtKey,
+                });
+                const convertJson = await convertRes.json();
+                if (convertJson.status !== 'success' || !convertJson.dlink) {
+                    throw new Error('y2mate: conversion failed');
+                }
+
+                const isAudio = audioToggle.checked;
+                showResult({
+                    title,
+                    thumbnail: thumb,
+                    info: fmtLabel,
+                    buttons: [{
+                        cls: isAudio ? 'audio' : 'video',
+                        url: convertJson.dlink,
+                        label: isAudio
+                            ? svgMusic() + ' Download Audio (' + fmtLabel + ')'
+                            : svgDl() + ' Download Video (' + fmtLabel + ')',
+                    }],
+                });
+            }
+
+            function svgDl() {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+            }
+            function svgMusic() {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+            }
+            function fmtNum(n) {
+                if (!n) return '';
+                if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+                if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+                return String(n);
+            }
+
             fetchBtn.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) { showToast('Paste a URL first!', 'error'); return; }
-
-                // Validate URL format
                 const isTikTok  = /tiktok\.com|vm\.tiktok/i.test(url);
                 const isYouTube = /youtube\.com|youtu\.be/i.test(url);
-
                 if (!isTikTok && !isYouTube) {
                     showToast('Only TikTok and YouTube URLs are supported', 'error');
                     return;
                 }
-
-                showStatus('Fetching video info…', 'loading');
                 fetchBtn.disabled = true;
-
                 try {
-                    // cobalt.tools public API — free, no auth needed
-                    const audioOnly = audioToggle.checked;
-                    const quality   = selectedQuality;
-
-                    const body = {
-                        url: url,
-                        videoQuality: quality,
-                        audioFormat: 'mp3',
-                        audioBitrate: '128',
-                        downloadMode: audioOnly ? 'audio' : 'auto',
-                        filenameStyle: 'pretty',
-                        tiktokFullAudio: false,
-                        tiktokH265: false,
-                        youtubeVideoCodec: 'h264',
-                    };
-
-                    const res = await fetch('https://api.cobalt.tools/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify(body),
-                    });
-
-                    const data = await res.json();
-
-                    if (data.status === 'error') {
-                        showStatus(data.error?.code || 'Could not fetch this video. Try a different URL.', 'error');
-                        return;
-                    }
-
-                    if (data.status === 'redirect' || data.status === 'stream') {
-                        // Single stream result
-                        showResult({
-                            title: data.filename || (isYouTube ? 'YouTube Video' : 'TikTok Video'),
-                            url: data.url,
-                            audio: null,
-                            thumbnail: null,
-                            quality: quality + 'p',
-                        });
-                        return;
-                    }
-
-                    if (data.status === 'picker') {
-                        // Multiple streams (YouTube video+audio separate, or photo carousels)
-                        const videoStream = data.picker?.find(p => p.type === 'video' || (!p.type && p.url));
-                        const audioStream = data.audio;
-                        showResult({
-                            title: data.filename || 'Video',
-                            url: videoStream?.url || null,
-                            audio: audioStream || null,
-                            thumbnail: videoStream?.thumb || null,
-                            quality: quality + 'p',
-                        });
-                        return;
-                    }
-
-                    // Fallback for tunnel/other statuses
-                    if (data.url) {
-                        showResult({
-                            title: data.filename || 'Video',
-                            url: data.url,
-                            audio: null,
-                            thumbnail: null,
-                            quality: '',
-                        });
-                        return;
-                    }
-
-                    showStatus('Unexpected response from server. Try again.', 'error');
-
+                    if (isTikTok) await fetchTikTok(url);
+                    else          await fetchYouTube(url);
                 } catch (err) {
                     console.error(err);
-                    showStatus('Network error — could not reach download server. Check your connection.', 'error');
+                    showStatus(err.message || 'Download failed. Please try again.', 'error');
                 } finally {
                     fetchBtn.disabled = false;
                 }
             });
 
-            // Allow Enter key to trigger fetch
-            urlInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') fetchBtn.click();
-            });
-
-            // Auto-detect platform when typing/pasting URL
-            urlInput.addEventListener('input', () => {
-                const v = urlInput.value;
-                if (v.includes('tiktok.com') || v.includes('vm.tiktok')) setActivePlatform('tiktok');
-                else if (v.includes('youtube.com') || v.includes('youtu.be')) setActivePlatform('youtube');
-                hideAll();
-            });
+            urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') fetchBtn.click(); });
+            urlInput.addEventListener('input',   () => { autoDetectPlatform(urlInput.value); hideAll(); });
         })();
 
     </script>

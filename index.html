@@ -1637,46 +1637,60 @@
             // YouTube has fully blocked all free clientside download APIs in 2025.
             // We fetch the video title/thumb from YouTube's oEmbed endpoint (no auth needed)
             // and show direct links to the best working free download sites.
+            // ── YouTube via p.oceansaver.in (the engine y2down.cc uses) ──────────
+            // Proxied through allorigins.win to bypass CORS on GitHub Pages
+            async function proxyFetch(url) {
+                const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+                if (!r.ok) throw new Error('Proxy error ' + r.status);
+                return r.json();
+            }
+
             async function fetchYouTube(url) {
-                setStatus('Looking up video info\u2026', 'loading');
+                setStatus('Starting download\u2026', 'loading');
 
                 const idMatch = url.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/);
                 const videoId = idMatch ? idMatch[1] : null;
-
                 let title = 'YouTube Video';
                 let thumb = videoId ? 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg' : null;
 
-                // oEmbed: free, open CORS, gives us the real title + thumbnail
+                // Get real title + thumb from oEmbed (open CORS, no auth)
                 try {
-                    const oembed = await fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent(url) + '&format=json');
-                    if (oembed.ok) {
-                        const meta = await oembed.json();
-                        title = meta.title || title;
-                        if (meta.thumbnail_url) thumb = meta.thumbnail_url;
-                    }
-                } catch { /* fallback to id-based thumb */ }
+                    const oe = await fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent(url) + '&format=json');
+                    if (oe.ok) { const m = await oe.json(); title = m.title || title; if (m.thumbnail_url) thumb = m.thumbnail_url; }
+                } catch {}
 
-                // SSYouTube trick: just prepend "ss" to youtube.com → opens savefrom.net
-                // with the video already loaded and all format options ready to click
-                const ssUrl = url
-                    .replace(/https?:\/\/(www\.)?youtube\.com/, 'https://ssyoutube.com')
-                    .replace(/https?:\/\/youtu\.be/, 'https://ssyoutu.be');
+                // Step 1: initiate job on oceansaver (no API key needed)
+                const initUrl = 'https://p.oceansaver.in/ajax/download.php?' + new URLSearchParams({ format: '1080', url, add_info: '1' });
+                const init = await proxyFetch(initUrl);
+                if (!init.success || !init.id) throw new Error('Could not start download. The video may be unavailable or age-restricted.');
+
+                const jobId = init.id;
+                // Use oceansaver title/thumb if better
+                if (init.info?.title) title = init.info.title;
+                if (init.info?.image) thumb = init.info.image;
+
+                // Step 2: poll progress until download_url is ready
+                let dlUrl = null;
+                setStatus('Processing\u2026 0%', 'loading');
+                for (let i = 0; i < 40; i++) {
+                    await new Promise(r => setTimeout(r, 2500));
+                    let prog;
+                    try { prog = await proxyFetch('https://p.oceansaver.in/ajax/progress?id=' + jobId); } catch { continue; }
+                    if (prog.download_url) { dlUrl = prog.download_url; break; }
+                    if (prog.success === 0) throw new Error('Processing failed. Try a different video.');
+                    const pct = Math.round((prog.progress || 0) / 10);
+                    setStatus('Processing\u2026 ' + pct + '%', 'loading');
+                }
+
+                if (!dlUrl) throw new Error('Timed out. The video may be too long — try a shorter one.');
 
                 renderCard({
-                    title,
-                    thumb,
-                    info: '\u25B6\uFE0F YouTube \u00b7 choose a format below',
-                    buttons: [
-                        {
-                            url: ssUrl,
-                            label: 'Download Video / MP3',
-                            icon: DL_ICON,
-                            primary: true,
-                            download: false,
-                        },
-                    ],
+                    title, thumb,
+                    info: '\u25B6\uFE0F YouTube \u00b7 1080p MP4',
+                    buttons: [{ url: dlUrl, label: 'Download MP4', icon: DL_ICON, primary: true, download: true }],
                 });
             }
+
 
             // ── Main ────────────────────────────────────────────────────────────
             fetchBtn.addEventListener('click', async () => {

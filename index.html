@@ -1,888 +1,965 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>XENO \u2013 Documentation</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
-<style>
-  :root {
-    --bg: #0b0d11;
-    --sidebar-bg: #0f1117;
-    --surface: #161a23;
-    --surface2: #1d2230;
-    --border: #252b3a;
-    --accent: #7c5cfc;
-    --accent2: #4ef0c4;
-    --accent3: #ff6b6b;
-    --text: #e8eaf0;
-    --muted: #7a829a;
-    --code-bg: #13161f;
-    --tag-purple: rgba(124,92,252,0.18);
-    --tag-green: rgba(78,240,196,0.15);
-    --tag-red: rgba(255,107,107,0.15);
-    --sidebar-w: 272px;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XENO — Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #18181f;
+      --border: #2a2a38;
+      --accent: #7c5cfc;
+      --accent2: #a78bfa;
+      --accent-glow: rgba(124,92,252,0.18);
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --code-bg: #13131c;
+      --sidebar-w: 260px;
+      --header-h: 58px;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--header-h);
+      background: rgba(10,10,15,0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 20px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px;
+      color: var(--text); text-decoration: none; flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c084fc);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 800; color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .header-divider { width: 1px; height: 20px; background: var(--border); }
+    .header-badge {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--accent2); background: rgba(124,92,252,0.12);
+      border: 1px solid rgba(124,92,252,0.25); border-radius: 999px;
+      padding: 2px 10px; text-transform: uppercase;
+    }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .header-link {
+      color: var(--muted); text-decoration: none; font-size: 0.82rem;
+      font-weight: 600; padding: 6px 12px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .header-link:hover { color: var(--text); background: var(--surface2); }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      color: var(--text); padding: 6px; border-radius: 6px;
+    }
+    .hamburger:hover { background: var(--surface2); }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-    display: flex;
-    min-height: 100vh;
-  }
+    /* LAYOUT */
+    .layout { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
 
-  /* \u2500\u2500 SIDEBAR \u2500\u2500 */
-  .sidebar {
-    width: var(--sidebar-w);
-    min-height: 100vh;
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--border);
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    z-index: 100;
-  }
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      position: fixed; top: var(--header-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 24px 12px 40px;
+      border-right: 1px solid var(--border); background: var(--bg);
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+      transition: transform 0.25s ease; z-index: 90;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    .sidebar-group { margin-bottom: 28px; }
+    .sidebar-group-title {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 0 8px 8px; display: block;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--muted);
+      font-size: 0.85rem; font-weight: 600;
+      padding: 7px 8px; border-radius: 7px;
+      transition: color 0.15s, background 0.15s; position: relative;
+    }
+    .sidebar-link:hover { color: var(--text); background: var(--surface2); }
+    .sidebar-link.active { color: var(--accent2); background: rgba(124,92,252,0.1); }
+    .sidebar-link.active::before {
+      content: ''; position: absolute; left: -12px; top: 4px; bottom: 4px;
+      width: 3px; background: var(--accent); border-radius: 0 3px 3px 0;
+    }
+    .sidebar-icon { font-size: 0.95rem; opacity: 0.7; }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 80;
+    }
 
-  .sidebar-logo {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-  }
+    /* MAIN */
+    main { margin-left: var(--sidebar-w); flex: 1; max-width: 860px; padding: 48px 48px 80px; }
 
-  .logo-mark {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: grid;
-    place-items: center;
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 14px;
-    color: #fff;
-    flex-shrink: 0;
-  }
+    /* SECTIONS */
+    .doc-section { margin-bottom: 72px; }
+    .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .section-pill {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+      border: 1px solid rgba(124,92,252,0.3); border-radius: 999px;
+      padding: 2px 10px; background: rgba(124,92,252,0.08);
+    }
+    h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; line-height: 1.15; }
+    h2 { font-size: 1.45rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.3px; margin-top: 48px; }
+    h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+    .lead { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 620px; }
+    p { font-size: 0.92rem; color: var(--muted); line-height: 1.75; margin-bottom: 14px; }
+    strong { color: var(--text); font-weight: 700; }
+    a { color: var(--accent2); }
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 
-  .logo-text {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--text);
-    letter-spacing: 0.04em;
-  }
-  .logo-badge {
-    font-size: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--accent2);
-    background: var(--tag-green);
-    border: 1px solid rgba(78,240,196,0.25);
-    border-radius: 4px;
-    padding: 1px 5px;
-    margin-left: 4px;
-    vertical-align: middle;
-  }
+    /* API CARD */
+    .api-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; margin-bottom: 24px;
+      transition: border-color 0.2s;
+    }
+    .api-card:hover { border-color: rgba(124,92,252,0.35); }
+    .api-card-header {
+      padding: 14px 20px; background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .api-name { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 700; color: var(--accent2); }
+    .api-badge {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+    }
+    .badge-fn { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+    .badge-bool { background: rgba(74,222,128,0.12); color: var(--green); border: 1px solid rgba(74,222,128,0.22); }
+    .badge-notify { background: rgba(250,204,21,0.12); color: var(--yellow); border: 1px solid rgba(250,204,21,0.22); }
+    .api-card-body { padding: 20px; }
+    .api-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
 
-  .sidebar-search {
-    margin: 14px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    cursor: text;
-    transition: border-color .2s;
-  }
-  .sidebar-search:hover { border-color: var(--accent); }
-  .sidebar-search span { color: var(--muted); font-size: 13px; flex: 1; }
-  .sidebar-search kbd {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1px 5px;
-  }
-  .search-icon { color: var(--muted); font-size: 13px; }
+    /* PARAMS TABLE */
+    .param-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .param-table th {
+      text-align: left; color: var(--muted); font-weight: 600;
+      font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 6px 10px; border-bottom: 1px solid var(--border);
+    }
+    .param-table td { padding: 8px 10px; border-bottom: 1px solid rgba(42,42,56,0.5); vertical-align: top; }
+    .param-table tr:last-child td { border-bottom: none; }
+    .param-name { font-family: 'JetBrains Mono', monospace; color: var(--accent2); font-size: 0.82rem; }
+    .param-type { font-family: 'JetBrains Mono', monospace; color: var(--blue); font-size: 0.78rem; }
+    .param-desc { color: var(--muted); }
 
-  .sidebar-nav { padding: 8px 0 24px; flex: 1; }
+    /* CODE BLOCK */
+    .code-wrap {
+      position: relative; margin-top: 14px;
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-lang { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .copy-btn {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+      color: var(--muted); background: none; border: none; cursor: pointer;
+      padding: 3px 8px; border-radius: 5px; transition: color 0.2s, background 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .copy-btn:hover { color: var(--text); background: var(--surface2); }
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; line-height: 1.7;
+      padding: 18px; overflow-x: auto; color: var(--text); tab-size: 4;
+    }
+    .kw { color: #c084fc; }
+    .fn-color { color: #60a5fa; }
+    .str { color: #4ade80; }
+    .num { color: #fb923c; }
+    .cmt { color: #4b5563; font-style: italic; }
+    .prop { color: #a78bfa; }
 
-  .nav-section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 16px 20px 6px;
-  }
+    /* CALLOUTS */
+    .callout {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px 16px; border-radius: 10px; margin: 20px 0;
+      font-size: 0.86rem; line-height: 1.65;
+    }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .callout-info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.22); color: #93c5fd; }
+    .callout-warn { background: rgba(250,204,21,0.07); border: 1px solid rgba(250,204,21,0.2); color: #fde68a; }
+    .callout-tip { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #86efac; }
 
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 20px;
-    font-size: 13.5px;
-    color: var(--muted);
-    text-decoration: none;
-    border-radius: 0;
-    transition: color .15s, background .15s;
-    cursor: pointer;
-    border-left: 2px solid transparent;
-    margin: 0 8px 0 0;
-    border-radius: 0 6px 6px 0;
-  }
-  .nav-item:hover { color: var(--text); background: var(--surface); }
-  .nav-item.active {
-    color: var(--accent);
-    background: rgba(124,92,252,0.1);
-    border-left-color: var(--accent);
-    font-weight: 500;
-  }
-  .nav-item .dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.5;
-    flex-shrink: 0;
-  }
+    /* HERO */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(124,92,252,0.12) 0%, rgba(192,132,252,0.06) 100%);
+      border: 1px solid rgba(124,92,252,0.2);
+      border-radius: 16px; padding: 36px 32px; margin-bottom: 40px;
+      position: relative; overflow: hidden;
+    }
+    .hero-banner::before {
+      content: 'XENO'; position: absolute; right: -10px; top: -20px;
+      font-size: 9rem; font-weight: 800; color: rgba(124,92,252,0.06);
+      font-family: 'Syne', sans-serif; letter-spacing: -8px; pointer-events: none;
+    }
+    .hero-banner h1 { font-size: 2.6rem; }
+    .hero-banner .lead { margin-bottom: 24px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 0.88rem;
+      background: var(--accent); color: #fff; text-decoration: none;
+      border: none; cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 0 24px rgba(124,92,252,0.3);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 0.88rem;
+      background: transparent; color: var(--text); text-decoration: none;
+      border: 1px solid var(--border); cursor: pointer; transition: background 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover { background: var(--surface2); transform: translateY(-1px); }
 
-  .sidebar-footer {
-    padding: 16px 12px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 8px;
-  }
-  .sidebar-link {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 7px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 12px;
-    transition: all .2s;
-  }
-  .sidebar-link:hover { color: var(--text); border-color: var(--accent); }
+    /* FEATURE GRID */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .feature-card:hover { border-color: rgba(124,92,252,0.35); transform: translateY(-2px); }
+    .feature-icon { font-size: 1.4rem; margin-bottom: 10px; }
+    .feature-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .feature-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
 
-  /* \u2500\u2500 MAIN \u2500\u2500 */
-  .main {
-    margin-left: var(--sidebar-w);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em; background: rgba(124,92,252,0.12);
+      color: var(--accent2); padding: 1px 6px; border-radius: 4px;
+    }
 
-  .topbar {
-    position: sticky;
-    top: 0;
-    background: rgba(11,13,17,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 48px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 50;
-  }
-
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .breadcrumb span { color: var(--text); }
-
-  .topbar-actions { display: flex; gap: 8px; }
-  .topbar-btn {
-    padding: 6px 14px;
-    border-radius: 7px;
-    font-size: 12.5px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all .2s;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
-    text-decoration: none;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .topbar-btn:hover { color: var(--text); border-color: var(--accent); }
-  .topbar-btn.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-  .topbar-btn.primary:hover { background: #6a4de8; }
-
-  /* \u2500\u2500 CONTENT \u2500\u2500 */
-  .content-wrap {
-    display: flex;
-    flex: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 0 48px;
-    gap: 48px;
-  }
-
-  .content {
-    flex: 1;
-    padding: 48px 0 80px;
-    min-width: 0;
-  }
-
-  /* Page selector tabs */
-  .page-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 40px;
-    overflow-x: auto;
-  }
-  .page-tab {
-    padding: 10px 20px;
-    font-size: 13.5px;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all .2s;
-    white-space: nowrap;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .page-tab:hover { color: var(--text); }
-  .page-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  /* Page sections */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Typography */
-  .page-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent2);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 36px;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, #fff 40%, var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .page-lead {
-    font-size: 16px;
-    color: var(--muted);
-    margin-bottom: 40px;
-    max-width: 600px;
-  }
-
-  h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin: 48px 0 16px;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  h2::before {
-    content: '';
-    width: 3px; height: 20px;
-    background: linear-gradient(to bottom, var(--accent), var(--accent2));
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin: 32px 0 12px;
-    color: var(--text);
-  }
-
-  p { margin-bottom: 16px; color: var(--muted); }
-  p strong { color: var(--text); font-weight: 500; }
-
-  /* Code blocks */
-  pre {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px 24px;
-    overflow-x: auto;
-    margin: 20px 0;
-    position: relative;
-  }
-  pre::before {
-    content: attr(data-lang);
-    position: absolute;
-    top: 10px; right: 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.8;
-  }
-  pre code { color: #c9d1e0; }
-  .c-kw { color: #c792ea; }
-  .c-fn { color: #82aaff; }
-  .c-str { color: #c3e88d; }
-  .c-num { color: #f78c6c; }
-  .c-cm { color: #546e7a; font-style: italic; }
-  .c-method { color: #4ef0c4; }
-  .c-prop { color: #ffcb6b; }
-  .c-bool { color: #ff5370; }
-
-  .inline-code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1px 6px;
-    color: var(--accent2);
-  }
-
-  /* Cards grid */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-    margin: 24px 0;
-  }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: border-color .2s, transform .2s;
-    cursor: default;
-  }
-  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .card-icon {
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: var(--text);
-  }
-  .card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-
-  /* API Reference tables */
-  .api-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin: 24px 0;
-    overflow: hidden;
-  }
-  .api-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .api-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--accent2);
-  }
-  .tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-  .tag-func { background: var(--tag-purple); color: var(--accent); border: 1px solid rgba(124,92,252,0.3); }
-  .tag-bool { background: var(--tag-green); color: var(--accent2); border: 1px solid rgba(78,240,196,0.3); }
-  .tag-opt  { background: rgba(255,203,107,0.12); color: #ffcb6b; border: 1px solid rgba(255,203,107,0.25); }
-  .tag-notify { background: var(--tag-red); color: #ff8a8a; border: 1px solid rgba(255,107,107,0.3); }
-
-  .api-body { padding: 16px 20px; }
-  .api-desc { font-size: 13.5px; color: var(--muted); margin-bottom: 16px; }
-  .params-title {
-    font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  th {
-    text-align: left;
-    padding: 8px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    background: var(--code-bg);
-  }
-  td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(37,43,58,0.5);
-    vertical-align: top;
-  }
-  tr:last-child td { border-bottom: none; }
-  .param-name { font-family: 'JetBrains Mono', monospace; color: var(--accent2); font-size: 12px; }
-  .param-type { color: #c792ea; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-  .param-desc { color: var(--muted); }
-
-  /* Callouts */
-  .callout {
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin: 20px 0;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    font-size: 13.5px;
-  }
-  .callout-info { background: rgba(124,92,252,0.1); border: 1px solid rgba(124,92,252,0.25); }
-  .callout-warn { background: rgba(255,203,107,0.08); border: 1px solid rgba(255,203,107,0.25); }
-  .callout-tip  { background: rgba(78,240,196,0.08); border: 1px solid rgba(78,240,196,0.25); }
-  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .callout-text { color: var(--text); line-height: 1.6; }
-  .callout-text strong { display: block; margin-bottom: 2px; }
-
-  /* TOC */
-  .toc {
-    width: 200px;
-    flex-shrink: 0;
-    padding: 48px 0 80px;
-    position: sticky;
-    top: 56px;
-    height: calc(100vh - 56px);
-    overflow-y: auto;
-    align-self: flex-start;
-  }
-  .toc-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-  .toc-link {
-    display: block;
-    font-size: 12.5px;
-    color: var(--muted);
-    text-decoration: none;
-    padding: 4px 0 4px 12px;
-    border-left: 1px solid var(--border);
-    transition: color .15s, border-color .15s;
-  }
-  .toc-link:hover { color: var(--accent); border-left-color: var(--accent); }
-
-  /* Copy button */
-  .copy-btn {
-    position: absolute;
-    top: 10px; right: 46px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--muted);
-    font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-    padding: 3px 8px;
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .copy-btn:hover { color: var(--accent2); border-color: var(--accent2); }
-
-  /* Method list */
-  .method-list { display: flex; flex-direction: column; gap: 4px; margin: 16px 0; }
-  .method-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    color: var(--accent2);
-    transition: border-color .2s;
-    cursor: default;
-  }
-  .method-item:hover { border-color: var(--accent2); }
-  .method-item .mi-desc { font-family: 'DM Sans', sans-serif; color: var(--muted); font-size: 12px; margin-left: auto; }
-
-  /* Footer */
-  .page-footer {
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 12px;
-  }
-  .footer-btn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .2s;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .footer-btn:hover { color: var(--text); border-color: var(--accent); }
-
-  /* Scroll styling */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-  /* Divider */
-  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
-
-  @media (max-width: 900px) {
-    .toc { display: none; }
-    .sidebar { transform: translateX(-100%); }
-    .main { margin-left: 0; }
-    .content-wrap { padding: 0 24px; }
-    .topbar { padding: 0 24px; }
-  }
-</style>
+    /* RESPONSIVE */
+    @media (max-width: 900px) { main { padding: 32px 28px 60px; } }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: 8px 0 32px rgba(0,0,0,0.5); }
+      .sidebar-overlay.open { display: block; }
+      main { margin-left: 0; padding: 28px 20px 60px; }
+      .hamburger { display: flex; }
+      h1 { font-size: 1.8rem; }
+      .hero-banner { padding: 24px 20px; }
+      .hero-banner h1 { font-size: 2rem; }
+      .hero-banner::before { font-size: 6rem; }
+    }
+    @media (max-width: 480px) {
+      main { padding: 20px 16px 60px; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.2rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .hero-btns { flex-direction: column; }
+      .btn-primary, .btn-secondary { justify-content: center; }
+      pre { font-size: 0.74rem; padding: 14px; }
+      .api-name { font-size: 0.78rem; word-break: break-all; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <a class="sidebar-logo" href="#">
-    <div class="logo-mark">X</div>
-    <div class="logo-text">XENO <span class="logo-badge">v1</span></div>
+<header>
+  <a href="#introduction" class="logo">
+    <div class="logo-icon">X</div>
+    XENO
   </a>
-
-  <div class="sidebar-search">
-    <span class="search-icon">\u2315</span>
-    <span>Search docs...</span>
-    <kbd>\u2318K</kbd>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-section-title">Overview</div>
-    <a class="nav-item active" onclick="showPage('intro', this)">
-      <span class="dot"></span> Introduction
-    </a>
-
-    <div class="nav-section-title">Getting Started</div>
-    <a class="nav-item" onclick="showPage('load', this)">
-      <span class="dot"></span> Loading XENO
-    </a>
-    <a class="nav-item" onclick="showPage('setup', this)">
-      <span class="dot"></span> Basic Setup
-    </a>
-
-    <div class="nav-section-title">Elements</div>
-    <a class="nav-item" onclick="showPage('button', this)">
-      <span class="dot"></span> Button
-    </a>
-    <a class="nav-item" onclick="showPage('switch', this)">
-      <span class="dot"></span> Switch
-    </a>
-    <a class="nav-item" onclick="showPage('slider', this)">
-      <span class="dot"></span> Slider
-    </a>
-    <a class="nav-item" onclick="showPage('dropdown', this)">
-      <span class="dot"></span> Dropdown
-    </a>
-    <a class="nav-item" onclick="showPage('multiselect', this)">
-      <span class="dot"></span> MultiSelect Dropdown
-    </a>
-    <a class="nav-item" onclick="showPage('textbox', this)">
-      <span class="dot"></span> TextBox
-    </a>
-    <a class="nav-item" onclick="showPage('keybind', this)">
-      <span class="dot"></span> Keybind
-    </a>
-
-    <div class="nav-section-title">UI Components</div>
-    <a class="nav-item" onclick="showPage('header', this)">
-      <span class="dot"></span> Header
-    </a>
-    <a class="nav-item" onclick="showPage('label', this)">
-      <span class="dot"></span> Label
-    </a>
-    <a class="nav-item" onclick="showPage('searchbar', this)">
-      <span class="dot"></span> SearchBar
-    </a>
-
-    <div class="nav-section-title">Notifications</div>
-    <a class="nav-item" onclick="showPage('notify', this)">
-      <span class="dot"></span> Notification System
-    </a>
-  </nav>
-
-  <div class="sidebar-footer">
-    <a class="sidebar-link" href="https://discord.gg/TdaWNwNAMa" target="_blank">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.036.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+  <div class="header-divider"></div>
+  <span class="header-badge">Docs</span>
+  <div class="header-right">
+    <a href="https://discord.gg/TdaWNwNAMa" target="_blank" class="header-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.015.04.036.05a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
       Discord
     </a>
-    <a class="sidebar-link" href="https://github.com/zxkuhl/XENO" target="_blank">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-      GitHub
-    </a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
   </div>
-</aside>
+</header>
 
-<!-- MAIN -->
-<main class="main">
-  <div class="topbar">
-    <div class="breadcrumb">
-      XENO &rsaquo; <span id="breadcrumb-cur">Introduction</span>
-    </div>
-    <div class="topbar-actions">
-      <a class="topbar-btn" href="https://discord.gg/TdaWNwNAMa" target="_blank">
-        \ud83d\udcac Discord
-      </a>
-      <a class="topbar-btn primary" href="https://github.com/zxkuhl/XENO" target="_blank">
-        \u2605 GitHub
-      </a>
-    </div>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-group">
+    <span class="sidebar-group-title">Overview</span>
+    <a href="#introduction" class="sidebar-link active"><span class="sidebar-icon">🏠</span> Introduction</a>
+    <a href="#getting-started" class="sidebar-link"><span class="sidebar-icon">⚡</span> Getting Started</a>
   </div>
+  <div class="sidebar-group">
+    <span class="sidebar-group-title">Elements</span>
+    <a href="#searchbar" class="sidebar-link"><span class="sidebar-icon">🔍</span> Search Bar</a>
+    <a href="#header-el" class="sidebar-link"><span class="sidebar-icon">🏷️</span> Header</a>
+    <a href="#label" class="sidebar-link"><span class="sidebar-icon">📝</span> Label</a>
+    <a href="#button" class="sidebar-link"><span class="sidebar-icon">🔘</span> Button</a>
+    <a href="#switch" class="sidebar-link"><span class="sidebar-icon">🔀</span> Switch</a>
+    <a href="#slider" class="sidebar-link"><span class="sidebar-icon">🎚️</span> Slider</a>
+    <a href="#dropdown" class="sidebar-link"><span class="sidebar-icon">📋</span> Dropdown</a>
+    <a href="#multiselect" class="sidebar-link"><span class="sidebar-icon">☑️</span> Multi-Select</a>
+    <a href="#textbox" class="sidebar-link"><span class="sidebar-icon">✏️</span> Text Box</a>
+    <a href="#keybind" class="sidebar-link"><span class="sidebar-icon">⌨️</span> Keybind</a>
+  </div>
+  <div class="sidebar-group">
+    <span class="sidebar-group-title">Reference</span>
+    <a href="#notifications" class="sidebar-link"><span class="sidebar-icon">🔔</span> Notifications</a>
+    <a href="#full-example" class="sidebar-link"><span class="sidebar-icon">📦</span> Full Example</a>
+  </div>
+</nav>
 
-  <div class="content-wrap">
-    <div class="content">
+<div class="layout">
+  <main>
 
-      <!-- INTRO PAGE -->
-      <div class="page active" id="page-intro">
-        <div class="page-eyebrow">Overview</div>
-        <h1>XENO UI Library</h1>
-        <p class="page-lead">A sleek, notification-aware UI library for Roblox. Open source, reliable, and built for production scripts.</p>
-
-        <div class="cards">
-          <div class="card">
-            <div class="card-icon">\u26a1</div>
-            <div class="card-title">One-line Load</div>
-            <div class="card-desc">Get started instantly with a single loadstring call.</div>
-          </div>
-          <div class="card">
-            <div class="card-icon">\ud83d\udd14</div>
-            <div class="card-title">Notification System</div>
-            <div class="card-desc">Every element supports optional smart alert notifications.</div>
-          </div>
-          <div class="card">
-            <div class="card-icon">\ud83d\udd0d</div>
-            <div class="card-title">Search Bar</div>
-            <div class="card-desc">Built-in searchable interface to find elements instantly.</div>
-          </div>
-          <div class="card">
-            <div class="card-icon">\ud83c\udfa8</div>
-            <div class="card-title">Clean Design</div>
-            <div class="card-desc">Polished, consistent UI across all elements and states.</div>
-          </div>
-        </div>
-
-        <h2>All Elements</h2>
-        <div class="method-list">
-          <div class="method-item"><span>AddButton</span><span class="mi-desc">Clickable action button</span></div>
-          <div class="method-item"><span>AddSwitch</span><span class="mi-desc">Toggle on/off state</span></div>
-          <div class="method-item"><span>AddSlider</span><span class="mi-desc">Numeric range input</span></div>
-          <div class="method-item"><span>AddDropdown</span><span class="mi-desc">Single-select option list</span></div>
-          <div class="method-item"><span>AddMultiSelectDropdown</span><span class="mi-desc">Multi-option selector</span></div>
-          <div class="method-item"><span>AddTextBox</span><span class="mi-desc">Free text input field</span></div>
-          <div class="method-item"><span>AddKeybind</span><span class="mi-desc">Keyboard shortcut binding</span></div>
-          <div class="method-item"><span>AddHeader</span><span class="mi-desc">Section heading</span></div>
-          <div class="method-item"><span>AddLabel</span><span class="mi-desc">Static description text</span></div>
-          <div class="method-item"><span>AddSearchBar</span><span class="mi-desc">Enable search functionality</span></div>
-        </div>
-
-        <h2>Quick Example</h2>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code><span class="c-kw">local</span> XENO = <span class="c-fn">loadstring</span>(<span class="c-fn">game</span>:<span class="c-method">HttpGet</span>(<span class="c-str">'https://raw.githubusercontent.com/zxkuhl/XENO/refs/heads/main/XENO-PUBLIC'</span>))()
-
-XENO:<span class="c-method">AddSearchBar</span>()
-XENO:<span class="c-method">AddHeader</span>(<span class="c-str">"My Script"</span>)
-XENO:<span class="c-method">AddButton</span>(<span class="c-str">"Do something"</span>, <span class="c-kw">function</span>()
-    <span class="c-fn">print</span>(<span class="c-str">"Button pressed!"</span>)
-<span class="c-kw">end</span>, <span class="c-bool">false</span>)</code></pre>
-
-        <div class="callout callout-info">
-          <span class="callout-icon">\ud83d\udca1</span>
-          <div class="callout-text"><strong>Notification parameter</strong>The last parameter on most elements is a boolean \u2014 set it to <code class="inline-code">true</code> to fire a notification when the element is used.</div>
+    <!-- INTRODUCTION -->
+    <section class="doc-section" id="introduction">
+      <div class="hero-banner">
+        <div class="section-header"><span class="section-pill">Overview</span></div>
+        <h1>XENO Library</h1>
+        <p class="lead">A powerful, lightweight UI library for Roblox scripts. Buttons, sliders, dropdowns, keybinds, and smart toast notifications — all in one clean API.</p>
+        <div class="hero-btns">
+          <a href="#getting-started" class="btn-primary">⚡ Get Started</a>
+          <a href="https://discord.gg/TdaWNwNAMa" target="_blank" class="btn-secondary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.015.04.036.05a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            Join Discord
+          </a>
         </div>
       </div>
 
-      <!-- LOAD PAGE -->
-      <div class="page" id="page-load">
-        <div class="page-eyebrow">Getting Started</div>
-        <h1>Loading XENO</h1>
-        <p class="page-lead">Load the library into your script with a single line via HttpGet.</p>
-
-        <h2>Load String</h2>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code><span class="c-kw">local</span> XENO = <span class="c-fn">loadstring</span>(<span class="c-fn">game</span>:<span class="c-method">HttpGet</span>(
-    <span class="c-str">'https://raw.githubusercontent.com/zxkuhl/XENO/refs/heads/main/XENO-PUBLIC'</span>
-))()</code></pre>
-
-        <div class="callout callout-warn">
-          <span class="callout-icon">\u26a0\ufe0f</span>
-          <div class="callout-text"><strong>Executor Support</strong>Requires an executor with <code class="inline-code">HttpGet</code> support (Synapse X, KRNL, Fluxus, etc.).</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎛️</div>
+          <div class="feature-title">Rich Elements</div>
+          <div class="feature-desc">Buttons, sliders, dropdowns, switches, text boxes, keybinds and more.</div>
         </div>
-
-        <h2>Discord &amp; Config</h2>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code><span class="c-kw">local</span> DiscordInvite = <span class="c-str">"https://discord.gg/TdaWNwNAMa"</span>
-<span class="c-kw">local</span> XENOGUINAME  = <span class="c-str">"YourNameHere"</span></code></pre>
-        <p>Set <code class="inline-code">DiscordInvite</code> to your own server link. Set <code class="inline-code">XENOGUINAME</code> to your script's display name.</p>
-
-        <h2>Initialization Delay</h2>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code><span class="c-fn">wait</span>(<span class="c-num">6</span>)
-
-XENO:<span class="c-method">AddSearchBar</span>()</code></pre>
-        <p>A short <code class="inline-code">wait()</code> after loading ensures the game has fully initialized before building the UI.</p>
-      </div>
-
-      <!-- SETUP PAGE -->
-      <div class="page" id="page-setup">
-        <div class="page-eyebrow">Getting Started</div>
-        <h1>Basic Setup</h1>
-        <p class="page-lead">Organize your script with sections, labels, and UI elements.</p>
-
-        <h2>Full Script Template</h2>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code><span class="c-kw">local</span> XENO = <span class="c-fn">loadstring</span>(<span class="c-fn">game</span>:<span class="c-method">HttpGet</span>(<span class="c-str">'https://raw.githubusercontent.com/zxkuhl/XENO/refs/heads/main/XENO-PUBLIC'</span>))()
-
-<span class="c-kw">local</span> DiscordInvite = <span class="c-str">"https://discord.gg/TdaWNwNAMa"</span>
-<span class="c-kw">local</span> XENOGUINAME  = <span class="c-str">"YourNameHere"</span>
-
-<span class="c-fn">wait</span>(<span class="c-num">6</span>)
-
-XENO:<span class="c-method">AddSearchBar</span>()
-
-XENO:<span class="c-method">AddHeader</span>(<span class="c-str">"NORMAL FEATURES"</span>)
-XENO:<span class="c-method">AddLabel</span>(<span class="c-str">"Standard interactions without alerts"</span>)
-
-XENO:<span class="c-method">AddButton</span>(<span class="c-str">"Print to Console"</span>, <span class="c-kw">function</span>()
-    <span class="c-fn">print</span>(<span class="c-str">"This is a standard button"</span>)
-<span class="c-kw">end</span>, <span class="c-bool">false</span>)</code></pre>
-
-        <div class="callout callout-tip">
-          <span class="callout-icon">\u2705</span>
-          <div class="callout-text"><strong>Tip</strong>Use <code class="inline-code">AddHeader</code> and <code class="inline-code">AddLabel</code> to visually separate sections of your UI for better readability.</div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <div class="feature-title">Smart Notifications</div>
+          <div class="feature-desc">Toast alerts with built-in anti-spam tag system per element.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-title">Search Bar</div>
+          <div class="feature-desc">Built-in search so users can quickly find any element in the panel.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⌨️</div>
+          <div class="feature-title">Keybinds</div>
+          <div class="feature-desc">Bind any Roblox KeyCode to trigger callbacks instantly.</div>
         </div>
       </div>
+    </section>
 
-      <!-- BUTTON PAGE -->
-      <div class="page" id="page-button">
-        <div class="page-eyebrow">Elements</div>
-        <h1>Button</h1>
-        <p class="page-lead">A clickable button that runs a callback when pressed. Supports optional notifications.</p>
+    <!-- GETTING STARTED -->
+    <section class="doc-section" id="getting-started">
+      <h2>⚡ Getting Started</h2>
+      <p>Load XENO at the top of your script with a single <code>loadstring</code> call, then set your GUI name and Discord link before adding elements.</p>
 
-        <div class="api-block">
-          <div class="api-header">
-            <span class="api-name">XENO:AddButton</span>
-            <span class="tag tag-func">function</span>
-          </div>
-          <div class="api-body">
-            <p class="api-desc">Creates a pressable button element in the UI. Fires the provided callback when clicked.</p>
-            <div class="params-title">Parameters</div>
-            <table>
-              <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
-              <tbody>
-                <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Text displayed on the button</td></tr>
-                <tr><td class="param-name">callback</td><td class="param-type">function</td><td class="param-desc">Function called when button is pressed</td></tr>
-                <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Whether to fire a notification on press</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <h2>Examples</h2>
-        <h3>Without notification</h3>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code>XENO:<span class="c-method">AddButton</span>(<span class="c-str">"Print to Console"</span>, <span class="c-kw">function</span>()
-    <span class="c-fn">print</span>(<span class="c-str">"This is a standard button"</span>)
-<span class="c-kw">end</span>, <span class="c-bool">false</span>)</code></pre>
-
-        <h3>With notification</h3>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code>XENO:<span class="c-method">AddButton</span>(<span class="c-str">"Secure Check"</span>, <span class="c-kw">function</span>()
-    <span class="c-fn">wait</span>(<span class="c-num">0.5</span>)
-    <span class="c-cm">-- your logic here</span>
-<span class="c-kw">end</span>, <span class="c-bool">true</span>)</code></pre>
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <span>XENO requires <strong>HttpGet</strong> to be enabled in your executor. The library is fetched from GitHub at runtime.</span>
       </div>
 
-      <!-- SWITCH PAGE -->
-      <div class="page" id="page-switch">
-        <div class="page-eyebrow">Elements</div>
-        <h1>Switch</h1>
-        <p class="page-lead">A toggle element that holds an on/off boolean state and fires a callback on change.</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmt">-- Load the XENO library</span>
+<span class="kw">local</span> XENO = <span class="fn-color">loadstring</span>(game:<span class="fn-color">HttpGet</span>(<span class="str">'https://raw.githubusercontent.com/zxkuhl/XENO/refs/heads/main/XENO-PUBLIC'</span>))()
 
-        <div class="api-block">
-          <div class="api-header">
-            <span class="api-name">XENO:AddSwitch</span>
-            <span class="tag tag-func">function</span>
-          </div>
-          <div class="api-body">
-            <p class="api-desc">Creates an on/off toggle. The callback receives the new state as a boolean.</p>
-            <div class="params-title">Parameters</div>
-            <table>
-              <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
-              <tbody>
-                <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Text label for the switch</td></tr>
-                <tr><td class="param-name">callback</td><td class="param-type">function(state: boolean)</td><td class="param-desc">Called with new state when toggled</td></tr>
-                <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Whether to fire a notification on toggle</td></tr>
-              </tbody>
-            </table>
+<span class="cmt">--- Configuration ---</span>
+<span class="kw">local</span> DiscordInvite = <span class="str">"https://discord.gg/TdaWNwNAMa"</span>
+<span class="kw">local</span> XENOGUINAME   = <span class="str">"YourNameHere"</span>
+
+<span class="fn-color">wait</span>(<span class="num">6</span>) <span class="cmt">-- Wait for game to fully load</span>
+
+<span class="cmt">-- Add your elements below...</span></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <span>Always call <code>wait(6)</code> before adding elements. This ensures the Roblox game has fully initialized before your UI renders.</span>
+      </div>
+    </section>
+
+    <hr/>
+
+    <!-- SEARCH BAR -->
+    <section class="doc-section" id="searchbar">
+      <h2>🔍 AddSearchBar</h2>
+      <p>Inserts a search input at the top of the XENO panel. Players can type to filter and quickly locate any element by name. <strong>Call this before adding any other elements.</strong></p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddSearchBar()</span>
+          <span class="api-badge badge-fn">Function</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">No parameters required. Call it once, immediately after loading XENO and before any other <code>Add*</code> calls.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre>XENO:<span class="fn-color">AddSearchBar</span>()</pre>
           </div>
         </div>
+      </div>
+    </section>
 
-        <h2>Examples</h2>
-        <pre data-lang="lua"><button class="copy-btn" onclick="copyCode(this)">copy</button><code><span class="c-cm">-- Standard switch</span>
-XENO:<span class="c-method">AddSwitch</span>(<span class="c-str">"Standard Switch"</span>, <span class="c-kw">function</span>(state)
-    <span class="c-fn">print</span>(<span class="c-str">"Switch is now:"</span>, state)
-<span class="c-kw">end</span>, <span class="c-bool">false</span>)
+    <!-- HEADER ELEMENT -->
+    <section class="doc-section" id="header-el">
+      <h2>🏷️ AddHeader</h2>
+      <p>Adds a bold visual section heading inside the panel. Use headers to separate groups of features such as "Combat", "Farm", or "Utility".</p>
 
-<span class="c-
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddHeader(title)</span>
+          <span class="api-badge badge-fn">Function</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Purely decorative. No callback or interactivity — just a styled divider with a title label.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">title</td><td class="param-type">string</td><td class="param-desc">The heading text displayed in the panel</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre>XENO:<span class="fn-color">AddHeader</span>(<span class="str">"NORMAL FEATURES"</span>)
+XENO:<span class="fn-color">AddHeader</span>(<span class="str">"COMBAT"</span>)
+XENO:<span class="fn-color">AddHeader</span>(<span class="str">"UTILITY"</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LABEL -->
+    <section class="doc-section" id="label">
+      <h2>📝 AddLabel</h2>
+      <p>Renders a small informational text line inside the panel. Great for adding context beneath a header or displaying current status.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddLabel(text)</span>
+          <span class="api-badge badge-fn">Function</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Displays a muted text string. No interactivity — informational only.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">text</td><td class="param-type">string</td><td class="param-desc">The text content to display</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre>XENO:<span class="fn-color">AddLabel</span>(<span class="str">"Standard interactions without alerts"</span>)
+XENO:<span class="fn-color">AddLabel</span>(<span class="str">"These alert you when used"</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUTTON -->
+    <section class="doc-section" id="button">
+      <h2>🔘 AddButton</h2>
+      <p>Creates a clickable button that fires a callback when pressed. The <code>notify</code> flag controls whether a toast notification pops up on click.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddButton(label, callback, notify)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">When clicked, <code>callback</code> is invoked. Set <code>notify</code> to <code>true</code> to show a toast alert confirming the action — useful for actions like teleports, checks, or toggles.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Button text shown in the panel</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function</td><td class="param-desc">Called when the button is clicked</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc"><code>true</code> = toast on click; <code>false</code> = silent</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- Silent button</span>
+XENO:<span class="fn-color">AddButton</span>(<span class="str">"Print to Console"</span>, <span class="kw">function</span>()
+    <span class="fn-color">print</span>(<span class="str">"This is a standard button"</span>)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+<span class="cmt">-- Button with notification</span>
+XENO:<span class="fn-color">AddButton</span>(<span class="str">"Secure Check"</span>, <span class="kw">function</span>()
+    <span class="fn-color">wait</span>(<span class="num">0.5</span>)
+    <span class="cmt">-- logic here</span>
+<span class="kw">end</span>, <span class="kw">true</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SWITCH -->
+    <section class="doc-section" id="switch">
+      <h2>🔀 AddSwitch</h2>
+      <p>A toggle switch for enabling or disabling features. Ideal for auto-farm, aim assist, ESP, or any persistent on/off state.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddSwitch(label, callback, notify)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-bool">Boolean State</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Renders an on/off toggle. The callback receives the new state (<code>true</code> = on, <code>false</code> = off) every time it's flipped.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Switch label shown in the panel</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function(state: boolean)</td><td class="param-desc">Receives <code>true</code> when on, <code>false</code> when off</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Whether to show a notification on each toggle</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- Silent switch</span>
+XENO:<span class="fn-color">AddSwitch</span>(<span class="str">"Standard Switch"</span>, <span class="kw">function</span>(state)
+    <span class="fn-color">print</span>(<span class="str">"Switch is now:"</span>, state)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+<span class="cmt">-- Auto-Farm with notification</span>
+XENO:<span class="fn-color">AddSwitch</span>(<span class="str">"Auto-Farm"</span>, <span class="kw">function</span>(state)
+    <span class="kw">if</span> state <span class="kw">then</span>
+        <span class="cmt">-- start farming loop</span>
+    <span class="kw">else</span>
+        <span class="cmt">-- stop farming loop</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>, <span class="kw">true</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDER -->
+    <section class="doc-section" id="slider">
+      <h2>🎚️ AddSlider</h2>
+      <p>A draggable slider for numeric values. Perfect for WalkSpeed, JumpPower, FOV, transparency, or anything on a numeric range.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddSlider(label, min, max, default, callback, notify?)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Renders a slider between <code>min</code> and <code>max</code>, initialized at <code>default</code>. The callback fires in real-time as the user drags. When <code>notify</code> is on, XENO's tag system batches rapid updates to prevent notification spam.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Name shown above the slider</td></tr>
+              <tr><td class="param-name">min</td><td class="param-type">number</td><td class="param-desc">Minimum value</td></tr>
+              <tr><td class="param-name">max</td><td class="param-type">number</td><td class="param-desc">Maximum value</td></tr>
+              <tr><td class="param-name">default</td><td class="param-type">number</td><td class="param-desc">Starting value (must be within min–max)</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function(val: number)</td><td class="param-desc">Called with current value as slider moves</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean?</td><td class="param-desc">Optional. Show notifications on change (anti-spam built in)</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- WalkSpeed slider (16–100, default 16)</span>
+XENO:<span class="fn-color">AddSlider</span>(<span class="str">"WalkSpeed"</span>, <span class="num">16</span>, <span class="num">100</span>, <span class="num">16</span>, <span class="kw">function</span>(val)
+    <span class="kw">if</span> LocalPlayer.<span class="prop">Character</span> <span class="kw">and</span>
+       LocalPlayer.<span class="prop">Character</span>:<span class="fn-color">FindFirstChild</span>(<span class="str">"Humanoid"</span>) <span class="kw">then</span>
+        LocalPlayer.<span class="prop">Character</span>.<span class="prop">Humanoid</span>.<span class="prop">WalkSpeed</span> = val
+    <span class="kw">end</span>
+<span class="kw">end</span>)
+
+<span class="cmt">-- Slider with notification (tag system prevents spam)</span>
+XENO:<span class="fn-color">AddSlider</span>(<span class="str">"Notify Slider"</span>, <span class="num">0</span>, <span class="num">100</span>, <span class="num">50</span>, <span class="kw">function</span>(val)
+    <span class="cmt">-- realtime logic</span>
+<span class="kw">end</span>, <span class="kw">true</span>)</pre>
+          </div>
+          <div class="callout callout-tip">
+            <span class="callout-icon">💡</span>
+            <span>Sliders with <code>notify = true</code> use a tag system to batch rapid updates — your screen won't be flooded while the user drags.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DROPDOWN -->
+    <section class="doc-section" id="dropdown">
+      <h2>📋 AddDropdown</h2>
+      <p>A single-select dropdown menu. Ideal for mode selection, teleport lists, aim options, or any mutually exclusive choice set.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddDropdown(label, options, default, callback, notify)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Renders a dropdown with a list of string options. The user picks one; the callback fires with the selected string value.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Dropdown label in the panel</td></tr>
+              <tr><td class="param-name">options</td><td class="param-type">table&lt;string&gt;</td><td class="param-desc">List of selectable string options</td></tr>
+              <tr><td class="param-name">default</td><td class="param-type">string</td><td class="param-desc">Initially selected option (must exist in options)</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function(opt: string)</td><td class="param-desc">Called with the chosen option string</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Show notification on selection change</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- Teleport list (silent)</span>
+XENO:<span class="fn-color">AddDropdown</span>(<span class="str">"Teleport List"</span>, {<span class="str">"Spawn"</span>, <span class="str">"Bank"</span>, <span class="str">"Safe Zone"</span>}, <span class="str">"Spawn"</span>, <span class="kw">function</span>(opt)
+    <span class="fn-color">print</span>(<span class="str">"Teleporting to:"</span>, opt)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+<span class="cmt">-- Aim mode selector (with notification)</span>
+XENO:<span class="fn-color">AddDropdown</span>(<span class="str">"Aim Mode"</span>, {<span class="str">"Legit"</span>, <span class="str">"Blatant"</span>, <span class="str">"Rage"</span>}, <span class="str">"Legit"</span>, <span class="kw">function</span>(opt)
+    <span class="cmt">-- apply aim mode logic</span>
+<span class="kw">end</span>, <span class="kw">true</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MULTI SELECT -->
+    <section class="doc-section" id="multiselect">
+      <h2>☑️ AddMultiSelectDropdown</h2>
+      <p>Like a dropdown, but lets the user pick <strong>multiple options simultaneously</strong>. Use this for zones, feature flags, or game modes that aren't mutually exclusive.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddMultiSelectDropdown(label, options, defaults, callback, notify)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">The callback fires with a table of all currently selected strings whenever the selection changes. Defaults pre-selects one or more options on load.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Dropdown label</td></tr>
+              <tr><td class="param-name">options</td><td class="param-type">table&lt;string&gt;</td><td class="param-desc">All available options</td></tr>
+              <tr><td class="param-name">defaults</td><td class="param-type">table&lt;string&gt;</td><td class="param-desc">Options pre-selected when the panel loads</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function(selected: table)</td><td class="param-desc">Called with all selected option strings as a table</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Show notification on selection change</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- Zone selector (silent, default: Spawn)</span>
+XENO:<span class="fn-color">AddMultiSelectDropdown</span>(
+    <span class="str">"Select Zones"</span>,
+    {<span class="str">"Spawn"</span>, <span class="str">"Bank"</span>, <span class="str">"Safe Zone"</span>, <span class="str">"Market"</span>, <span class="str">"Arena"</span>},
+    {<span class="str">"Spawn"</span>},
+    <span class="kw">function</span>(selected)
+        <span class="fn-color">print</span>(<span class="str">"Selected:"</span>, table.<span class="fn-color">concat</span>(selected, <span class="str">", "</span>))
+    <span class="kw">end</span>,
+    <span class="kw">false</span>
+)
+
+<span class="cmt">-- Mode selector (with notification)</span>
+XENO:<span class="fn-color">AddMultiSelectDropdown</span>(
+    <span class="str">"Select Modes"</span>,
+    {<span class="str">"Legit"</span>, <span class="str">"Blatant"</span>, <span class="str">"Rage"</span>, <span class="str">"Silent"</span>},
+    {<span class="str">"Legit"</span>},
+    <span class="kw">function</span>(selected)
+        <span class="fn-color">print</span>(<span class="str">"Modes:"</span>, table.<span class="fn-color">concat</span>(selected, <span class="str">", "</span>))
+    <span class="kw">end</span>,
+    <span class="kw">true</span>
+)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEXTBOX -->
+    <section class="doc-section" id="textbox">
+      <h2>✏️ AddTextBox</h2>
+      <p>A freeform text input field. Use it to let players type usernames, custom values, or any string input your script needs.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddTextBox(label, placeholder, default, callback, notify)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Renders a text input. The callback fires when the user submits the text (on focus lost or pressing Enter). Placeholder text is shown when the field is empty.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Label shown above the input field</td></tr>
+              <tr><td class="param-name">placeholder</td><td class="param-type">string</td><td class="param-desc">Greyed-out hint text when the field is empty</td></tr>
+              <tr><td class="param-name">default</td><td class="param-type">string</td><td class="param-desc">Pre-filled value on load (use <code>""</code> for blank)</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function(text: string)</td><td class="param-desc">Called with the entered text on submit</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Show notification when text is submitted</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- Username input (silent)</span>
+XENO:<span class="fn-color">AddTextBox</span>(
+    <span class="str">"Username"</span>,
+    <span class="str">"Type a username..."</span>,
+    <span class="str">""</span>,
+    <span class="kw">function</span>(text)
+        <span class="fn-color">print</span>(<span class="str">"User typed:"</span>, text)
+    <span class="kw">end</span>,
+    <span class="kw">false</span>
+)
+
+<span class="cmt">-- Username input (with notification)</span>
+XENO:<span class="fn-color">AddTextBox</span>(
+    <span class="str">"Username"</span>,
+    <span class="str">"Type a username..."</span>,
+    <span class="str">""</span>,
+    <span class="kw">function</span>(text)
+        <span class="fn-color">print</span>(<span class="str">"User typed:"</span>, text)
+    <span class="kw">end</span>,
+    <span class="kw">true</span>
+)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEYBIND -->
+    <section class="doc-section" id="keybind">
+      <h2>⌨️ AddKeybind</h2>
+      <p>Binds a keyboard key to a callback function. Use this for toggling the UI, activating abilities, or any action that needs a hotkey.</p>
+
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-name">XENO:AddKeybind(label, keyCode, callback, notify)</span>
+          <span class="api-badge badge-fn">Function</span>
+          <span class="api-badge badge-notify">Notify Support</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-desc">Registers a hotkey using a Roblox <code>Enum.KeyCode</code>. The callback fires each time the key is pressed. The keybind label and bound key are displayed in the panel.</p>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">label</td><td class="param-type">string</td><td class="param-desc">Display name for this keybind in the panel</td></tr>
+              <tr><td class="param-name">keyCode</td><td class="param-type">Enum.KeyCode</td><td class="param-desc">The key to listen for (e.g. <code>Enum.KeyCode.RightControl</code>)</td></tr>
+              <tr><td class="param-name">callback</td><td class="param-type">function</td><td class="param-desc">Fired each time the key is pressed</td></tr>
+              <tr><td class="param-name">notify</td><td class="param-type">boolean</td><td class="param-desc">Show a notification when the keybind fires</td></tr>
+            </tbody>
+          </table>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmt">-- Toggle UI with Right Control (with notification)</span>
+XENO:<span class="fn-color">AddKeybind</span>(
+    <span class="str">"Toggle Interface"</span>,
+    Enum.<span class="prop">KeyCode</span>.<span class="prop">RightControl</span>,
+    <span class="kw">function</span>()
+        <span class="fn-color">ToggleUI</span>()
+    <span class="kw">end</span>,
+    <span class="kw">true</span>
+)</pre>
+          </div>
+          <div class="callout callout-info">
+            <span class="callout-icon">ℹ️</span>
+            <span>Any valid <a href="https://create.roblox.com/docs/reference/engine/enums/KeyCode" target="_blank">Enum.KeyCode</a> works. Popular choices: <code>RightControl</code>, <code>F6</code>, <code>Insert</code>, <code>Home</code>, <code>End</code>.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section class="doc-section" id="notifications">
+      <h2>🔔 Notification System</h2>
+      <p>Every interactive element in XENO supports an optional <code>notify</code> parameter. When <code>true</code>, a toast notification appears whenever that element is interacted with.</p>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">✨</span>
+        <span>XENO uses a <strong>tag system</strong> to prevent spam. Elements that fire rapidly (like sliders) batch their notifications so your screen stays clean.</span>
+      </div>
+
+      <div class="api-card" style="margin-top: 20px;">
+        <div class="api-card-header">
+          <span class="api-name">notify: boolean</span>
+          <span class="api-badge badge-bool">Last Parameter</span>
+        </div>
+        <div class="api-card-body">
+          <table class="param-table">
+            <thead><tr><th>Value</th><th>Behavior</th><th>Use When</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="param-name">false</td>
+                <td class="param-desc">Silent — no notification shown</td>
+                <td class="param-desc">Internal updates, print-only debug, high-frequency callbacks</td>
+              </tr>
+              <tr>
+                <td class="param-name">true</td>
+                <td class="param-desc">Toast notification appears on use</td>
+                <td class="param-desc">Mode changes, toggles, keybinds, user-submitted inputs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FULL EXAMPLE -->
+    <section class="doc-section" id="full-example">
+      <h2>📦 Full Example Script</h2>
+      <p>A complete working script showing every XENO element, organized into two sections — one without notifications and one with.</p>
+
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">Luau</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="kw">local</span> XENO = <span class="fn-color">loadstring</span>(game:<span class="fn-color">HttpGet</span>(<span class="str">'https://raw.githubusercontent.com/zxkuhl/XENO/refs/heads/main/XENO-PUBLIC'</span>))()
+
+<span class="cmt">--- Configuration ---</span>
+<span class="kw">local</span> DiscordInvite = <span class="str">"https://discord.gg/TdaWNwNAMa"</span>
+<span class="kw">local</span> XENOGUINAME   = <span class="str">"YourNameHere"</span>
+
+<span class="fn-color">wait</span>(<span class="num">6</span>)
+
+XENO:<span class="fn-color">AddSearchBar</span>()
+
+<span class="cmt">-- 1. NORMAL FEATURES SECTION</span>
+XENO:<span class="fn-color">AddHeader</span>(<span class="str">"NORMAL FEATURES"</span>)
+XENO:<span class="fn-color">AddLabel</span>(<span class="str">"Standard interactions without alerts"</span>)
+
+XENO:<span class="fn-color">AddButton</span>(<span class="str">"Print to Console"</span>, <span class="kw">function</span>()
+    <span class="fn-color">print</span>(<span class="str">"This is a standard button"</span>)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+XENO:<span class="fn-color">AddSwitch</span>(<span class="str">"Standard Switch"</span>, <span class="kw">function</span>(state)
+    <span class="fn-color">print</span>(<span class="str">"Switch is now:"</span>, state)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+XENO:<span class="fn-color">AddSlider</span>(<span class="str">"WalkSpeed"</span>, <span class="num">16</span>, <span class="num">100</span>, <span class="num">16</span>, <span class="kw">function</span>(val)
+    <span class="kw">if</span> LocalPlayer.<span class="prop">Character</span> <span class="kw">and</span> LocalPlayer.<span class="prop">Character</span>:<span class="fn-color">FindFirstChild</span>(<span class="str">"Humanoid"</span>) <span class="kw">then</span>
+        LocalPlayer.<span class="prop">Character</span>.<span class="prop">Humanoid</span>.<span class="prop">WalkSpeed</span> = val
+    <span class="kw">end</span>
+<span class="kw">end</span>)
+
+XENO:<span class="fn-color">AddDropdown</span>(<span class="str">"Teleport List"</span>, {<span class="str">"Spawn"</span>, <span class="str">"Bank"</span>, <span class="str">"Safe Zone"</span>}, <span class="str">"Spawn"</span>, <span class="kw">function</span>(opt)
+    <span class="fn-color">print</span>(<span class="str">"Teleporting to:"</span>, opt)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+XENO:<span class="fn-color">AddMultiSelectDropdown</span>(<span class="str">"Select Zones"</span>, {<span class="str">"Spawn"</span>, <span class="str">"Bank"</span>, <span class="str">"Safe Zone"</span>, <span class="str">"Market"</span>, <span class="str">"Arena"</span>}, {<span class="str">"Spawn"</span>}, <span class="kw">function</span>(selected)
+    <span class="fn-color">print</span>(<span class="str">"Selected:"</span>, table.<span class="fn-color">concat</span>(selected, <span class="str">", "</span>))
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+XENO:<span class="fn-color">AddTextBox</span>(<span class="str">"Username"</span>, <span class="str">"Type a username..."</span>, <span class="str">""</span>, <span class="kw">function</span>(text)
+    <span class="fn-color">print</span>(<span class="str">"User typed:"</span>, text)
+<span class="kw">end</span>, <span class="kw">false</span>)
+
+
+<span class="cmt">-- 2. NOTIFICATION FEATURES SECTION</span>
+XENO:<span class="fn-color">AddHeader</span>(<span class="str">"NOTIFICATION FEATURES"</span>)
+XENO:<span class="fn-color">AddLabel</span>(<span class="str">"These alert you when used"</span>)
+
+XENO:<span class="fn-color">AddButton</span>(<span class="str">"Secure Check"</span>, <span class="kw">function</span>()
+    <span class="fn-color">wait</span>(<span class="num">0.5</span>)
+<span class="kw">end</span>, <span class="kw">true</span>)
+
+XENO:<span class="fn-color">AddSwitch</span>(<span class="str">"Auto-Farm"</span>, <span class="kw">function</span>(state)
+    <span class="cmt">-- Logic here</span>
+<span class="kw">end</span>, <span class="kw">true</span>)
+
+XENO:<span class="fn-color">AddSlider</span>(<span class="str">"Notify Slider"</span>, <span class="num">0</span>, <span class="num">100</span>, <span class="num">50</span>, <span class="kw">function</span>(val)
+    <span class="cmt">-- Realtime notification updates (tag system handles spam)</span>
+<span class="kw">end</span>, <span class="kw">true</span>)
+
+XENO:<span class="fn-color">AddDropdown</span>(<span class="str">"Aim Mode"</span>, {<span class="str">"Legit"</span>, <span class="str">"Blatant"</span>, <span class="str">"Rage"</span>}, <span class="str">"Legit"</span>, <span class="kw">function</span>(opt)
+    <span class="cmt">-- Logic here</span>
+<span class="kw">end</span>, <span class="kw">true</span>)
+
+XENO:<span class="fn-color">AddMultiSelectDropdown</span>(<span class="str">"Select Modes"</span>, {<span class="str">"Legit"</span>, <span class="str">"Blatant"</span>, <span class="str">"Rage"</span>, <span class="str">"Silent"</span>}, {<span class="str">"Legit"</span>}, <span class="kw">function</span>(selected)
+    <span class="fn-color">print</span>(<span class="str">"Modes selected:"</span>, table.<span class="fn-color">concat</span>(selected, <span class="str">", "</span>))
+<span class="kw">end</span>, <span class="kw">true</span>)
+
+XENO:<span class="fn-color">AddTextBox</span>(<span class="str">"Username"</span>, <span class="str">"Type a username..."</span>, <span class="str">""</span>, <span class="kw">function</span>(text)
+    <span class="fn-color">print</span>(<span class="str">"User typed:"</span>, text)
+<span class="kw">end</span>, <span class="kw">true</span>)
+
+XENO:<span class="fn-color">AddKeybind</span>(<span class="str">"Toggle Interface"</span>, Enum.<span class="prop">KeyCode</span>.<span class="prop">RightControl</span>, <span class="kw">function</span>()
+    <span class="fn-color">ToggleUI</span>()
+<span class="kw">end</span>, <span class="kw">true</span>)</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  });
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+  });
+
+  // Active link on scroll
+  const sections = document.querySelectorAll('.doc-section');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        const id = entry.target.id;
+        const active = document.querySelector(`.sidebar-link[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // Copy buttons
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+</script>
+</body>
+</html>

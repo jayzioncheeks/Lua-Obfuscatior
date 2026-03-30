@@ -202,10 +202,10 @@ wait(6)</pre>
     <div class="code-container">
       <button class="code-copy" onclick="copyBlock(this)">Copy</button>
       <pre>--- Configuration ---
- _G.dc = "https://discord.gg/yourdc"    -- change to yours, this is just XENO dc lol
+_G.dc = "https://discord.gg/yourdc"    -- change to yours, this is just XENO dc lol
 _G.XENOGUINAME = "name"</pre>
     </div>
-
+    
     <div class="grid-label" id="setup-theming">Theming</div>
     <p>XENO allows you to adjust the visual style dynamically. You can enforce a default theme using <code>SetTheme()</code>, or provide users with buttons to change it themselves.</p>
     <div class="code-container">
@@ -289,8 +289,8 @@ XENO:AddSlider("WalkSpeed", 16, 100, 16, function(val) end)</pre>
     <div class="code-container">
       <button class="code-copy" onclick="copyBlock(this)">Copy Script</button>
       <pre>--- Configuration ---
-local DiscordInvite = "https://discord.gg/TdaWNwNAMa"
-local XENOGUINAME = "My Awesome Script"
+_G.dc = "https://discord.gg/yourdc"    -- change to yours, this is just XENO dc lol
+_G.XENOGUINAME = "name"
 
 local XENO = loadstring(game:HttpGet(('https://raw.githubusercontent.com/zxkuhl/XENO/refs/heads/main/XENO-PUBLIC')))()
 local Players = game:GetService("Players")

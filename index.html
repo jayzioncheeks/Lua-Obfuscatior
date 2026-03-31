@@ -89,7 +89,7 @@
     .nav-btn strong { font-size: 1rem; display: block; }
     .nav-spacer { flex: 1; }
 
-    /* ── OBFUSCATOR ── */
+    /* \u2500\u2500 OBFUSCATOR \u2500\u2500 */
     .obf-box { background: #000; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 20px 0; }
     .obf-box-header { padding: 10px 16px; background: #111116; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
     .obf-textarea { width: 100%; background: transparent; border: none; outline: none; color: #d4d4d4; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; padding: 16px; resize: vertical; min-height: 200px; }
@@ -103,44 +103,83 @@
     .obf-strength select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-family: inherit; cursor: pointer; }
     .obf-status { font-size: 0.8rem; color: var(--accent); margin-top: 4px; min-height: 20px; }
 
-    /* ── SHARE FORM ── */
+    /* \u2500\u2500 SHARE FORM \u2500\u2500 */
     .share-textarea { width: 100%; background: #000; border: 1px solid var(--border); border-radius: 12px; color: #d4d4d4; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; padding: 16px; resize: vertical; min-height: 220px; outline: none; transition: border-color 0.2s; }
     .share-textarea:focus { border-color: var(--accent); }
 
-    /* ── PASTE VIEW PAGE ── */
-    .paste-header-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      background: #111116; border: 1px solid var(--border); border-radius: 12px 12px 0 0;
-      padding: 12px 16px; margin-top: 20px;
+    /* \u2500\u2500 PASTE VIEW \u2014 full screen takeover like Pastefy \u2500\u2500 */
+    #paste-fullscreen {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg);
+      z-index: 9000;
+      flex-direction: column;
     }
-    .paste-id-label { font-size: 0.8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
-    .paste-actions { display: flex; gap: 8px; }
-    .paste-code-block {
-      background: #000; border: 1px solid var(--border); border-top: none;
-      border-radius: 0 0 12px 12px; padding: 20px;
-      color: #d4d4d4; font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap;
-      word-break: break-all; min-height: 300px; max-height: 70vh; overflow-y: auto;
+    #paste-fullscreen.active { display: flex; }
+
+    .paste-topbar {
+      position: sticky; top: 0;
+      background: #0f0f13;
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 56px;
+      display: flex; align-items: center; gap: 16px;
+      flex-shrink: 0;
+    }
+    .paste-topbar-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; }
+    .paste-topbar-logo img { width: 22px; height: 22px; object-fit: contain; }
+    .paste-topbar-divider { width: 1px; height: 24px; background: var(--border); }
+    .paste-topbar-id { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); flex: 1; }
+    .paste-topbar-actions { display: flex; gap: 8px; }
+
+    .paste-fullscreen-code {
+      flex: 1;
+      overflow: auto;
+      padding: 28px 32px;
+    }
+    .paste-fullscreen-code pre {
+      color: #d4d4d4;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
 
-    /* ── RAW VIEW — full page takeover ── */
-    #raw-view {
+    /* \u2500\u2500 RAW VIEW \u2014 pure text, full screen \u2500\u2500 */
+    #raw-fullscreen {
       display: none;
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #0a0a0a; z-index: 9999;
-      overflow: auto;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #0a0a0a;
+      z-index: 9999;
+      flex-direction: column;
     }
-    #raw-view.active { display: block; }
+    #raw-fullscreen.active { display: flex; }
+
     .raw-topbar {
       position: sticky; top: 0;
-      background: #111116; border-bottom: 1px solid var(--border);
-      padding: 10px 20px; display: flex; align-items: center; gap: 12px;
+      background: #111116;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
     }
-    .raw-topbar span { font-size: 0.8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; flex: 1; }
+    .raw-topbar-id { font-size: 0.8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; flex: 1; }
+
+    .raw-fullscreen-content {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+    }
     #raw-code {
-      margin: 0; padding: 24px;
-      color: #d4d4d4; font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem; line-height: 1.7; white-space: pre-wrap;
+      margin: 0;
+      color: #d4d4d4;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
       word-break: break-all;
     }
 
@@ -155,14 +194,38 @@
 </head>
 <body>
 
-<!-- RAW VIEW — full screen overlay, shown via hash routing -->
-<div id="raw-view">
-  <div class="raw-topbar">
-    <span id="raw-label">raw</span>
-    <button class="tool-btn secondary" id="rawCopyBtn">Copy</button>
-    <button class="tool-btn secondary" id="rawBackBtn">← Back</button>
+<!-- \u2500\u2500 PASTE FULLSCREEN (like pastefy.app/ID) \u2500\u2500 -->
+<div id="paste-fullscreen">
+  <div class="paste-topbar">
+    <div class="paste-topbar-logo">
+      <img src="https://raw.githubusercontent.com/jayzioncheeks/XENO-Docs/refs/heads/main/X%20logo.png" alt="XENO" />
+      XENO
+    </div>
+    <div class="paste-topbar-divider"></div>
+    <div class="paste-topbar-id" id="paste-topbar-id"></div>
+    <div class="paste-topbar-actions">
+      <button class="tool-btn secondary" id="pasteCopyLinkBtn">Copy Link</button>
+      <button class="tool-btn secondary" id="pasteRawBtn">Raw</button>
+      <button class="tool-btn secondary" id="pasteCopyCodeBtn">Copy Code</button>
+      <button class="tool-btn secondary" id="pasteNewBtn">+ New</button>
+      <button class="tool-btn secondary" id="pasteCloseBtn">\u2190 Docs</button>
+    </div>
   </div>
-  <pre id="raw-code"></pre>
+  <div class="paste-fullscreen-code">
+    <pre id="paste-code-content"></pre>
+  </div>
+</div>
+
+<!-- \u2500\u2500 RAW FULLSCREEN (like pastefy.app/ID/raw) \u2500\u2500 -->
+<div id="raw-fullscreen">
+  <div class="raw-topbar">
+    <span class="raw-topbar-id" id="raw-topbar-id"></span>
+    <button class="tool-btn secondary" id="rawCopyBtn">Copy</button>
+    <button class="tool-btn secondary" id="rawBackBtn">\u2190 Back</button>
+  </div>
+  <div class="raw-fullscreen-content">
+    <pre id="raw-code"></pre>
+  </div>
 </div>
 
 <header>
@@ -212,7 +275,7 @@
 
   <!-- INTRO -->
   <section id="intro" class="page active">
-    <div class="breadcrumbs">Overview › <span class="cur">Introduction</span></div>
+    <div class="breadcrumbs">Overview \u203a <span class="cur">Introduction</span></div>
     <h1>Introduction</h1>
     <p>XENO is a refined UI library for Roblox scripts, optimized for performance and production use. It gives you a complete set of UI primitives like windows, tabs, elements, search bars, and notifications.</p>
     <div class="hero-image-container">
@@ -230,7 +293,7 @@
 
   <!-- SETUP -->
   <section id="setup" class="page">
-    <div class="breadcrumbs">Overview › <span class="cur">Getting Started</span></div>
+    <div class="breadcrumbs">Overview \u203a <span class="cur">Getting Started</span></div>
     <h1>Getting Started</h1>
     <div class="section-label" id="setup-init">Initialization</div>
     <p>Include the library and wait for the game environment to initialize. The <code>wait(6)</code> ensures everything loads smoothly.</p>
@@ -266,7 +329,7 @@ AddThemeBtn("Red", Themes.Red.Accent1)</pre>
 
   <!-- ELEMENTS -->
   <section id="elements" class="page">
-    <div class="breadcrumbs">Elements › <span class="cur">Commands</span></div>
+    <div class="breadcrumbs">Elements \u203a <span class="cur">Commands</span></div>
     <h1>Elements &amp; Commands</h1>
     <p>XENO includes several components to build out your interface. The final boolean argument usually determines if a notification is triggered.</p>
     <div class="section-label" id="elem-status">Status Bar &amp; Search</div>
@@ -303,7 +366,7 @@ XENO:AddSlider("WalkSpeed", 16, 100, 16, function(val) end)</pre>
 
   <!-- EXAMPLE -->
   <section id="example" class="page">
-    <div class="breadcrumbs">Guide › <span class="cur">Full Code Script</span></div>
+    <div class="breadcrumbs">Guide \u203a <span class="cur">Full Code Script</span></div>
     <h1>Full Implementation</h1>
     <p>This script includes <strong>Configuration</strong>, <strong>ToggleUI logic</strong>, and <strong>Player Variable</strong> handling to ensure it works in-game immediately.</p>
     <div class="code-container">
@@ -360,15 +423,15 @@ end, true)</pre>
 
   <!-- OBFUSCATOR -->
   <section id="obfuscator" class="page">
-    <div class="breadcrumbs">Tools › <span class="cur">Obfuscator</span></div>
+    <div class="breadcrumbs">Tools \u203a <span class="cur">Obfuscator</span></div>
     <h1>Lua Obfuscator</h1>
     <p>Paste your Lua script below and hit Obfuscate. Your code will be transformed to make it harder to read while remaining fully functional.</p>
     <div class="obf-box">
-      <div class="obf-box-header">Input — Your Script</div>
+      <div class="obf-box-header">Input \u2014 Your Script</div>
       <textarea class="obf-textarea" id="obfInput" placeholder="-- Paste your Lua script here..."></textarea>
     </div>
     <div class="obf-controls">
-      <button class="tool-btn" id="obfBtn">⚡ Obfuscate</button>
+      <button class="tool-btn" id="obfBtn">\u26a1 Obfuscate</button>
       <button class="tool-btn secondary" id="obfClearBtn">Clear</button>
       <div class="obf-strength">
         <label for="obfLevel">Strength</label>
@@ -381,41 +444,24 @@ end, true)</pre>
     </div>
     <div class="obf-status" id="obfStatus"></div>
     <div class="obf-box" id="obfOutputBox" style="display:none;">
-      <div class="obf-box-header">Output — Obfuscated</div>
+      <div class="obf-box-header">Output \u2014 Obfuscated</div>
       <textarea class="obf-textarea" id="obfOutput" readonly></textarea>
     </div>
     <div class="obf-controls" id="obfOutputControls" style="display:none;">
       <button class="tool-btn secondary" id="obfCopyBtn">Copy Output</button>
-      <button class="tool-btn secondary" id="obfSendShareBtn">Send to Share →</button>
+      <button class="tool-btn secondary" id="obfSendShareBtn">Send to Share \u2192</button>
     </div>
   </section>
 
   <!-- SHARE FORM -->
   <section id="share" class="page">
-    <div class="breadcrumbs">Tools › <span class="cur">Share Script</span></div>
+    <div class="breadcrumbs">Tools \u203a <span class="cur">Share Script</span></div>
     <h1>Share Script</h1>
-    <p>Paste your script and press <strong>Submit</strong>. You'll be taken to the paste page with both a normal link and a raw link.</p>
+    <p>Paste your script and press <strong>Submit</strong>. You'll get a shareable link \u2014 anyone with it can view the code or open the raw version, just like Pastefy.</p>
     <textarea class="share-textarea" id="shareInput" placeholder="-- Paste your script here..."></textarea>
     <div style="margin-top:12px;">
       <button class="tool-btn" id="shareSubmitBtn">Submit</button>
     </div>
-  </section>
-
-  <!-- PASTE VIEW (normal link destination) -->
-  <section id="paste-view" class="page">
-    <div class="breadcrumbs">Tools › Share › <span class="cur" id="paste-view-id"></span></div>
-    <h1>Script</h1>
-
-    <div class="paste-header-bar">
-      <span class="paste-id-label" id="paste-view-label"></span>
-      <div class="paste-actions">
-        <button class="tool-btn secondary" id="pasteNormalCopyBtn">Copy Link</button>
-        <button class="tool-btn secondary" id="pasteRawLinkBtn">Raw →</button>
-        <button class="tool-btn secondary" id="pasteCopyCodeBtn">Copy Code</button>
-        <button class="tool-btn secondary" id="pasteNewBtn">+ New</button>
-      </div>
-    </div>
-    <div class="paste-code-block" id="paste-code-block"></div>
   </section>
 
 </main>
@@ -423,7 +469,7 @@ end, true)</pre>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ── In-memory paste store ────────────────────────────────────
+  // \u2500\u2500 In-memory paste store \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   var pastes = {};
   var currentPasteId = null;
 
@@ -438,45 +484,112 @@ document.addEventListener('DOMContentLoaded', function () {
     return window.location.href.split('#')[0];
   }
 
-  // ── Hash router ──────────────────────────────────────────────
+  // \u2500\u2500 Hash router \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  // Routes:
+  //   #paste-XXXXXXXX  \u2192 paste fullscreen view  (like pastefy.app/ID)
+  //   #paste-XXXXXXXX/raw \u2192 raw fullscreen view (like pastefy.app/ID/raw)
+
   function handleHash() {
-    var hash = window.location.hash; // e.g. #paste-ABCD1234 or #raw-ABCD1234
-    if (!hash) return;
+    var hash = window.location.hash;
+    if (!hash) {
+      closePasteView();
+      closeRawView();
+      return;
+    }
 
+    var rawMatch   = hash.match(/^#paste-([A-Za-z0-9]+)\/raw$/);
     var pasteMatch = hash.match(/^#paste-([A-Za-z0-9]+)$/);
-    var rawMatch   = hash.match(/^#raw-([A-Za-z0-9]+)$/);
 
-    if (pasteMatch) {
-      var id = pasteMatch[1];
-      if (pastes[id]) openPasteView(id);
-    } else if (rawMatch) {
+    if (rawMatch) {
       var id = rawMatch[1];
+      closePasteView();
       if (pastes[id]) openRawView(id);
+    } else if (pasteMatch) {
+      var id = pasteMatch[1];
+      closeRawView();
+      if (pastes[id]) openPasteView(id);
     }
   }
 
   window.addEventListener('hashchange', handleHash);
 
-  // ── Show/hide raw overlay ────────────────────────────────────
+  // \u2500\u2500 PASTE FULLSCREEN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  function openPasteView(id) {
+    currentPasteId = id;
+    var code = pastes[id] || '';
+    var normalUrl = getBaseUrl() + '#paste-' + id;
+
+    document.getElementById('paste-topbar-id').textContent = normalUrl;
+    document.getElementById('paste-code-content').textContent = code;
+    document.getElementById('paste-fullscreen').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePasteView() {
+    document.getElementById('paste-fullscreen').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('pasteRawBtn').addEventListener('click', function () {
+    if (currentPasteId) {
+      window.location.hash = 'paste-' + currentPasteId + '/raw';
+    }
+  });
+
+  document.getElementById('pasteCopyLinkBtn').addEventListener('click', function () {
+    if (!currentPasteId) return;
+    var url = getBaseUrl() + '#paste-' + currentPasteId;
+    navigator.clipboard.writeText(url).then(function () {
+      var btn = document.getElementById('pasteCopyLinkBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(function () { btn.textContent = 'Copy Link'; }, 2000);
+    });
+  });
+
+  document.getElementById('pasteCopyCodeBtn').addEventListener('click', function () {
+    var code = document.getElementById('paste-code-content').textContent;
+    navigator.clipboard.writeText(code).then(function () {
+      var btn = document.getElementById('pasteCopyCodeBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(function () { btn.textContent = 'Copy Code'; }, 2000);
+    });
+  });
+
+  document.getElementById('pasteNewBtn').addEventListener('click', function () {
+    document.getElementById('shareInput').value = '';
+    closePasteView();
+    window.location.hash = '';
+    showPage('share');
+  });
+
+  document.getElementById('pasteCloseBtn').addEventListener('click', function () {
+    closePasteView();
+    window.location.hash = '';
+    showPage('share');
+  });
+
+  // \u2500\u2500 RAW FULLSCREEN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   function openRawView(id) {
     var code = pastes[id] || '';
+    var rawUrl = getBaseUrl() + '#paste-' + id + '/raw';
     document.getElementById('raw-code').textContent = code;
-    document.getElementById('raw-label').textContent = getBaseUrl() + '#raw-' + id;
-    document.getElementById('raw-view').classList.add('active');
+    document.getElementById('raw-topbar-id').textContent = rawUrl;
+    document.getElementById('raw-fullscreen').classList.add('active');
     document.body.style.overflow = 'hidden';
     currentPasteId = id;
   }
 
   function closeRawView() {
-    document.getElementById('raw-view').classList.remove('active');
+    document.getElementById('raw-fullscreen').classList.remove('active');
     document.body.style.overflow = '';
-    // Go back to the normal paste view
+  }
+
+  document.getElementById('rawBackBtn').addEventListener('click', function () {
+    closeRawView();
     if (currentPasteId) {
       window.location.hash = 'paste-' + currentPasteId;
     }
-  }
-
-  document.getElementById('rawBackBtn').addEventListener('click', closeRawView);
+  });
 
   document.getElementById('rawCopyBtn').addEventListener('click', function () {
     var code = document.getElementById('raw-code').textContent;
@@ -487,58 +600,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // ── Paste view page ──────────────────────────────────────────
-  function openPasteView(id) {
-    currentPasteId = id;
-    var code = pastes[id] || '';
-    var base = getBaseUrl();
-    var normalUrl = base + '#paste-' + id;
-    var rawUrl    = base + '#raw-' + id;
-
-    document.getElementById('paste-view-id').textContent = id;
-    document.getElementById('paste-view-label').textContent = normalUrl;
-    document.getElementById('paste-code-block').textContent = code;
-
-    document.getElementById('pasteNormalCopyBtn').onclick = function () {
-      navigator.clipboard.writeText(normalUrl).then(function () {
-        var btn = document.getElementById('pasteNormalCopyBtn');
-        btn.textContent = 'Copied!';
-        setTimeout(function () { btn.textContent = 'Copy Link'; }, 2000);
-      });
-    };
-
-    document.getElementById('pasteRawLinkBtn').onclick = function () {
-      window.location.hash = 'raw-' + id;
-    };
-
-    document.getElementById('pasteCopyCodeBtn').onclick = function () {
-      navigator.clipboard.writeText(code).then(function () {
-        var btn = document.getElementById('pasteCopyCodeBtn');
-        btn.textContent = 'Copied!';
-        setTimeout(function () { btn.textContent = 'Copy Code'; }, 2000);
-      });
-    };
-
-    document.getElementById('pasteNewBtn').onclick = function () {
-      document.getElementById('shareInput').value = '';
-      showPage('share');
-      window.location.hash = '';
-    };
-
-    showPage('paste-view');
-  }
-
-  // ── Submit new paste ─────────────────────────────────────────
+  // \u2500\u2500 Submit new paste \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   document.getElementById('shareSubmitBtn').addEventListener('click', function () {
     var code = document.getElementById('shareInput').value.trim();
     if (!code) return;
     var id = genId();
     pastes[id] = code;
-    // Navigate to the paste view via hash — this triggers hashchange → openPasteView
     window.location.hash = 'paste-' + id;
   });
 
-  // ── Page navigation ──────────────────────────────────────────
+  // \u2500\u2500 Page navigation \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   function showPage(pageId) {
     document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
     var target = document.getElementById(pageId);
@@ -586,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('sidebar').classList.toggle('open');
   });
 
-  // ── OBFUSCATOR ───────────────────────────────────────────────
+  // \u2500\u2500 OBFUSCATOR \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   function obfuscateLua(code, level) {
     var varMap = {}, varCounter = 0;
     function makeVarName() {
@@ -632,16 +703,16 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('obfBtn').addEventListener('click', function () {
     var input = document.getElementById('obfInput').value.trim();
     var status = document.getElementById('obfStatus');
-    if (!input) { status.textContent = '⚠ Please paste a script first.'; return; }
-    status.textContent = '⚙ Obfuscating...';
+    if (!input) { status.textContent = '\u26a0 Please paste a script first.'; return; }
+    status.textContent = '\u2699 Obfuscating...';
     setTimeout(function () {
       try {
         var result = obfuscateLua(input, document.getElementById('obfLevel').value);
         document.getElementById('obfOutput').value = result;
         document.getElementById('obfOutputBox').style.display = 'block';
         document.getElementById('obfOutputControls').style.display = 'flex';
-        status.textContent = '✓ Done! ' + input.length + ' → ' + result.length + ' chars';
-      } catch(e) { status.textContent = '✗ Error: ' + e.message; }
+        status.textContent = '\u2713 Done! ' + input.length + ' \u2192 ' + result.length + ' chars';
+      } catch(e) { status.textContent = '\u2717 Error: ' + e.message; }
     }, 80);
   });
 
@@ -666,10 +737,9 @@ document.addEventListener('DOMContentLoaded', function () {
     showPage('share');
   });
 
-  // ── Init ─────────────────────────────────────────────────────
+  // \u2500\u2500 Init \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   showPage('intro');
   handleHash();
 });
 </script>
-</body>
-</html>
+</body
